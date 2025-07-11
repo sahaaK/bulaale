@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulaal | Creative Graphics & Video Agency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0a3723',
+                        secondary: '#1a5d3a',
+                        accent: '#3a0ca3',
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float2': 'float 8s ease-in-out infinite',
+                        'float3': 'float 5s ease-in-out infinite',
+                        'spin-slow': 'spin 20s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #050f0a;
+            color: #e1e1e1;
+            overflow-x: hidden;
+        }
+        
+        .glass-morphism {
+            background: rgba(10, 55, 35, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(26, 93, 58, 0.3);
+        }
+        
+        .purple-accent {
+            box-shadow: 0 0 15px rgba(58, 12, 163, 0.5);
+        }
+        
+        .bubble {
+            border-radius: 50%;
+            filter: blur(20px);
+            opacity: 0.6;
+            position: absolute;
+            z-index: -1;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(315deg, #050f0a 0%, #0a3723 50%, #1a5d3a 100%);
+        }
+        
+        .section-gradient {
+            background: linear-gradient(180deg, #050f0a 0%, #0a3723 100%);
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 10px rgba(58, 12, 163, 0.7);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(10, 55, 35, 0.3), 0 10px 10px -5px rgba(10, 55, 35, 0.2);
+        }
+        
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .shape-blob {
+            border-radius: 30% 50% 20% 40%;
+            animation: transform 20s ease-in-out infinite both alternate, spin-slow 80s linear infinite;
+            filter: blur(30px);
+            opacity: 0.15;
+        }
+    </style>
+</head>
+<body class="relative">
+    <!-- Floating background elements -->
+    <div class="bubble bg-emerald-800 w-64 h-64 -left-20 -top-20 animation-delay-0"></div>
+    <div class="bubble bg-purple-900 w-96 h-96 -right-40 top-1/3 animation-delay-200"></div>
+    <div class="bubble bg-emerald-700 w-80 h-80 left-1/4 bottom-40 animation-delay-400"></div>
+    <div class="shape-blob bg-emerald-600 w-64 h-64 absolute left-1/3 top-1/4"></div>
+    <div class="shape-blob bg-purple-700 w-96 h-96 absolute right-1/4 bottom-1/4"></div>
+    
+    <!-- Navigation -->
+    <nav class="glass-morphism fixed w-full z-50 py-4 px-6 shadow-lg">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-white flex items-center">
+                <img src="images/logo-1.png" alt="Bulaal Logo" style="width: 32px; height: 32px;" class="rounded-full shadow-lg bg-white/10 mr-2">
+                BULAAL
+            </a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="text-white hover:text-emerald-300 transition">Home</a>
+                <a href="#services" class="text-white hover:text-emerald-300 transition">Services</a>
+                <a href="#portfolio" class="text-white hover:text-emerald-300 transition">Portfolio</a>
+                <a href="#about" class="text-white hover:text-emerald-300 transition">About</a>
+                <a href="#contact" class="text-white hover:text-emerald-300 transition">Contact</a>
+            </div>
+            <button class="md:hidden text-white">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="home" class="hero-gradient min-h-screen flex items-center pt-20 pb-32 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 sm:px-12 lg:px-8 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 z-10 mt-16 md:mt-0">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                    <span class="glow-text">Visual</span> Storytelling <br>
+                    <span class="text-emerald-400">Redefined</span>
+                </h1>
+                <p class="text-lg md:text-xl mb-8 opacity-90 max-w-lg">
+                    We craft breathtaking graphics and cinematic videos that elevate brands and captivate audiences. Your vision, our expertise - let's create magic together.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#contact" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-full font-medium transition-all transform hover:scale-105 shadow-lg">
+                        Get Started
+                    </a>
+                    <a href="#portfolio" class="bg-transparent border-2 border-emerald-500 text-white px-8 py-3 rounded-full font-medium transition-all transform hover:scale-105">
+                        View Work
+                    </a>
+                </div>
+            </div>
+            <div class="md:w-1/2 relative mt-12 md:mt-0">
+                <div class="w-full max-w-md mx-auto relative">
+                    <div class="absolute -top-10 -left-10 w-64 h-64 bg-purple-900 rounded-full opacity-20 blur-xl animate-pulse"></div>
+                    <div class="absolute -bottom-10 -right-10 w-64 h-64 bg-emerald-700 rounded-full opacity-20 blur-xl animate-pulse animation-delay-1000"></div>
+                    <img src="images/design-1.jpeg" 
+                         alt="Creative Design" 
+                         class="rounded-3xl object-cover w-full h-96 shadow-2xl relative z-10 transform rotate-3 hover:rotate-0 transition duration-500">
+                    <div class="absolute -bottom-5 -right-5 bg-emerald-600 w-24 h-24 rounded-2xl flex items-center justify-center z-20 shadow-xl transform rotate-12">
+                        <i class="fas fa-play text-3xl text-white"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating 3D elements -->
+        <div class="absolute top-1/4 left-1/6 w-16 h-16 bg-purple-600 rounded-full opacity-30 animate-float z-0"></div>
+        <div class="absolute top-3/4 right-1/5 w-24 h-24 bg-emerald-500 rounded-full opacity-30 animate-float2 z-0"></div>
+        <div class="absolute bottom-16 left-1/3 w-20 h-20 bg-purple-700 rounded-full opacity-30 animate-float3 z-0"></div>
+    </section>
+    
+    <!-- Clients Section -->
+    <section class="py-12 bg-gradient-to-r from-emerald-900 to-emerald-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <p class="text-center text-emerald-300 mb-8">TRUSTED BY INNOVATIVE BRANDS</p>
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-90">
+                <img src="https://via.placeholder.com/150x60/1a5d3a/FFFFFF?text=Brand+1" alt="Brand 1" class="h-8 md:h-12 opacity-70 hover:opacity-100 transition">
+                <img src="https://via.placeholder.com/150x60/1a5d3a/FFFFFF?text=Brand+2" alt="Brand 2" class="h-8 md:h-12 opacity-70 hover:opacity-100 transition">
+                <img src="https://via.placeholder.com/150x60/1a5d3a/FFFFFF?text=Brand+3" alt="Brand 3" class="h-8 md:h-12 opacity-70 hover:opacity-100 transition">
+                <img src="https://via.placeholder.com/150x60/1a5d3a/FFFFFF?text=Brand+4" alt="Brand 4" class="h-8 md:h-12 opacity-70 hover:opacity-100 transition">
+                <img src="https://via.placeholder.com/150x60/1a5d3a/FFFFFF?text=Brand+5" alt="Brand 5" class="h-8 md:h-12 opacity-70 hover:opacity-100 transition">
+            </div>
+        </div>
+    </section>
+    
+    <!-- Services Section -->
+    <section id="services" class="section-gradient py-24 relative overflow-hidden">
+        <div class="bubble bg-purple-800 w-80 h-80 -left-40 top-1/4"></div>
+        <div class="bubble bg-emerald-800 w-96 h-96 -right-40 bottom-1/4"></div>
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Our <span class="text-emerald-400">Services</span></h2>
+                <p class="max-w-2xl mx-auto opacity-90">We offer a comprehensive suite of creative services to bring your brand's vision to life</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service Card 1 -->
+                <div class="glass-morphism rounded-2xl p-8 card-hover purple-accent">
+                    <div class="w-16 h-16 bg-emerald-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-film text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Video Production</h3>
+                    <p class="opacity-80 mb-4">Cinematic storytelling with professional production from concept to final cut.</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> Commercials & Ads
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> Corporate Videos
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> Event Coverage
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Service Card 2 -->
+                <div class="glass-morphism rounded-2xl p-8 card-hover">
+                    <div class="w-16 h-16 bg-purple-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-paint-brush text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Graphic Design</h3>
+                    <p class="opacity-80 mb-4">Visually stunning designs that communicate your brand's essence.</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> Brand Identity
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> Print Materials
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> Digital Assets
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Service Card 3 -->
+                <div class="glass-morphism rounded-2xl p-8 card-hover">
+                    <div class="w-16 h-16 bg-emerald-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-mobile-alt text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Motion Graphics</h3>
+                    <p class="opacity-80 mb-4">Dynamic animations that capture attention and deliver messages effectively.</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> Explainer Videos
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> Logo Animations
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> UI/UX Animations
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Service Card 4 -->
+                <div class="glass-morphism rounded-2xl p-8 card-hover">
+                    <div class="w-16 h-16 bg-purple-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-camera text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Photography</h3>
+                    <p class="opacity-80 mb-4">Professional photography services for all your visual needs.</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> Product Photography
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> Portrait Sessions
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> Event Photography
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Service Card 5 -->
+                <div class="glass-morphism rounded-2xl p-8 card-hover">
+                    <div class="w-16 h-16 bg-emerald-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-globe text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Web Design</h3>
+                    <p class="opacity-80 mb-4">Engaging websites that represent your brand and convert visitors.</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> Responsive Design
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> UI/UX Optimization
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> E-commerce Solutions
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Service Card 6 -->
+                <div class="glass-morphism rounded-2xl p-8 card-hover purple-accent">
+                    <div class="w-16 h-16 bg-purple-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-bullhorn text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Social Media</h3>
+                    <p class="opacity-80 mb-4">Complete social media content creation and strategy.</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> Content Creation
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> Campaign Management
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-emerald-400 mr-2"></i> Analytics & Strategy
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-24 relative overflow-hidden parallax" style="background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80')">
+        <div class="absolute inset-0 bg-black opacity-70"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Our <span class="text-emerald-400">Portfolio</span></h2>
+                <p class="max-w-2xl mx-auto opacity-90">Explore our latest projects showcasing our creativity and expertise</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Portfolio Item 1 -->
+                <div class="group relative rounded-2xl overflow-hidden h-80 card-hover">
+                    <img src="images/design-1.jpeg" 
+                         alt="Project 1" 
+                         class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-2">Natura Cosmetics</h3>
+                            <p class="text-emerald-300">360° Brand Campaign</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Portfolio Item 2 -->
+                <div class="group relative rounded-2xl overflow-hidden h-80 card-hover">
+                    <img src="images/design-3.jpeg" 
+                         alt="Project 2" 
+                         class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-2">TechElevate Conference</h3>
+                            <p class="text-emerald-300">Motion Graphics Package</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Portfolio Item 3 -->
+                <div class="group relative rounded-2xl overflow-hidden h-80 card-hover">
+                    <img src="images/design-4.jpeg" 
+                         alt="Project 3" 
+                         class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-2">Urban Wellness</h3>
+                            <p class="text-emerald-300">Corporate Identity</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-16">
+                <a href="#" class="inline-flex items-center px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-medium transition-all transform hover:scale-105 shadow-lg">
+                    View All Projects
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="section-gradient py-24 relative">
+        <div class="bubble bg-purple-900 w-64 h-64 -left-20 top-1/3"></div>
+        <div class="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center">
+            <div class="lg:w-1/2 mb-12 lg:mb-0 lg:pr-12">
+                <h2 class="text-4xl font-bold mb-8">About <span class="text-emerald-400">Bulaal</span></h2>
+                <p class="mb-6 opacity-90">
+                    Founded in 2012, Bulaal has grown from a small creative studio to a full-service graphics and video production agency working with global brands. We combine artistic vision with technical expertise to create stunning visual content.
+                </p>
+                <p class="mb-6 opacity-90">
+                    Our team of directors, designers, animators, and developers collaborate closely to produce work that not only looks incredible but delivers measurable results for our clients.
+                </p>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="glass-morphism p-6 rounded-xl">
+                        <h3 class="text-3xl font-bold text-emerald-400 mb-2">250+</h3>
+                        <p class="opacity-90">Projects Completed</p>
+                    </div>
+                    <div class="glass-morphism p-6 rounded-xl">
+                        <h3 class="text-3xl font-bold text-emerald-400 mb-2">50+</h3>
+                        <p class="opacity-90">Clients Worldwide</p>
+                    </div>
+                    <div class="glass-morphism p-6 rounded-xl">
+                        <h3 class="text-3xl font-bold text-emerald-400 mb-2">15+</h3>
+                        <p class="opacity-90">Industry Awards</p>
+                    </div>
+                    <div class="glass-morphism p-6 rounded-xl">
+                        <h3 class="text-3xl font-bold text-emerald-400 mb-2">100%</h3>
+                        <p class="opacity-90">Client Satisfaction</p>
+                    </div>
+                </div>
+            </div>
+            <div class="lg:w-1/2 relative">
+                <div class="relative z-10">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                         alt="Our Team" 
+                         class="rounded-2xl shadow-2xl w-full max-w-lg mx-auto">
+                </div>
+                <div class="absolute -bottom-8 -right-8 w-64 h-64 bg-purple-800 rounded-full opacity-20 blur-xl -z-10"></div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials -->
+    <section class="py-24 bg-gradient-to-r from-emerald-900 to-purple-900 relative overflow-hidden">
+        <div class="shape-blob bg-emerald-600 w-96 h-96 absolute -top-40 -right-40 z-0"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Client <span class="text-emerald-400">Testimonials</span></h2>
+                <p class="max-w-2xl mx-auto opacity-90">What our clients say about working with Bulaal</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="glass-morphism p-8 rounded-2xl relative">
+                    <div class="text-emerald-400 text-5xl opacity-30 absolute top-4 left-4">“</div>
+                    <p class="mb-6 italic relative z-10 opacity-90">
+                        "Bulaal transformed our brand identity with their stunning designs. Their creative vision and attention to detail exceeded all our expectations. The team was professional, responsive, and truly understood our needs."
+                    </p>
+                    <div class="flex items-center">
+                        <img src="images/zaki.jpeg" alt="Mohamed A." class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <div>
+                            <h4 class="font-bold">Mohamed A.</h4>
+                            <p class="text-sm opacity-80">Marketing Director, Natura Cosmetics</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Testimonial 2 -->
+                <div class="glass-morphism p-8 rounded-2xl relative purple-accent">
+                    <div class="text-emerald-400 text-5xl opacity-30 absolute top-4 left-4">“</div>
+                    <p class="mb-6 italic relative z-10 opacity-90">
+                        "The video production for our product launch was phenomenal. Bulaal captured the essence of our technology in a way that was both informative and visually stunning. Their post-production work was flawless."
+                    </p>
+                    <div class="flex items-center">
+                        <img src="images/zack.jpeg" alt="Dr. Mohamed" class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <div>
+                            <h4 class="font-bold">Dr. Mohamed</h4>
+                            <p class="text-sm opacity-80">CEO, TechElevate</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Testimonial 3 -->
+                <div class="glass-morphism p-8 rounded-2xl relative">
+                    <div class="text-emerald-400 text-5xl opacity-30 absolute top-4 left-4">“</div>
+                    <p class="mb-6 italic relative z-10 opacity-90">
+                        "Working with Bulaal on our corporate rebrand has been exceptional. They listened to our needs, provided innovative solutions, and delivered beyond our brief. Their creative process is collaborative and insightful."
+                    </p>
+                    <div class="flex items-center">
+                        <img src="images/umayma.jpeg" alt="Layla Muse" class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <div>
+                            <h4 class="font-bold">Layla Muse</h4>
+                            <p class="text-sm opacity-80">Creative Director, Urban Wellness</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Project Request Section -->
+    <section id="contact" class="section-gradient py-24 relative overflow-hidden">
+        <div class="bubble bg-emerald-800 w-96 h-96 -left-40 top-1/4"></div>
+        <div class="bubble bg-purple-800 w-80 h-80 -right-40 bottom-1/4"></div>
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Start Your <span class="text-emerald-400">Project</span></h2>
+                <p class="max-w-2xl mx-auto opacity-90">Ready to elevate your brand with stunning visuals? Let's discuss your project requirements.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="glass-morphism p-8 md:p-12 rounded-2xl">
+                    <h3 class="text-2xl font-bold mb-6">Project Request Form</h3>
+                    <form>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium mb-2 opacity-80">Full Name</label>
+                                <input type="text" id="name" class="w-full px-4 py-3 bg-emerald-900/50 border border-emerald-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="Your name">
+                            </div>
+                            <div>
+                                <label for="company" class="block text-sm font-medium mb-2 opacity-80">Company</label>
+                                <input type="text" id="company" class="w-full px-4 py-3 bg-emerald-900/50 border border-emerald-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="Your company">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label for="email" class="block text-sm font-medium mb-2 opacity-80">Email</label>
+                                <input type="email" id="email" class="w-full px-4 py-3 bg-emerald-900/50 border border-emerald-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="your@email.com">
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-sm font-medium mb-2 opacity-80">Phone</label>
+                                <input type="tel" id="phone" class="w-full px-4 py-3 bg-emerald-900/50 border border-emerald-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="+1 (___) ___-____">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="services" class="block text-sm font-medium mb-2 opacity-80">Services Needed</label>
+                            <select id="services" class="w-full px-4 py-3 bg-emerald-900/50 border border-emerald-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                                <option value="">Select services</option>
+                                <option value="video">Video Production</option>
+                                <option value="graphics">Graphic Design</option>
+                                <option value="motion">Motion Graphics</option>
+                                <option value="photography">Photography</option>
+                                <option value="web">Web Design</option>
+                                <option value="social">Social Media</option>
+                                <option value="multiple">Multiple Services</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="budget" class="block text-sm font-medium mb-2 opacity-80">Project Budget</label>
+                            <select id="budget" class="w-full px-4 py-3 bg-emerald-900/50 border border-emerald-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                                <option value="">Select budget range</option>
+                                <option value="1-5">$1,000 - $5,000</option>
+                                <option value="5-10">$5,000 - $10,000</option>
+                                <option value="10-25">$10,000 - $25,000</option>
+                                <option value="25-50">$25,000 - $50,000</option>
+                                <option value="50+">$50,000+</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="message" class="block text-sm font-medium mb-2 opacity-80">Project Details</label>
+                            <textarea id="message" rows="5" class="w-full px-4 py-3 bg-emerald-900/50 border border-emerald-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="Tell us about your project..."></textarea>
+                        </div>
+                        
+                        <div class="flex items-center mb-6">
+                            <input id="agree" type="checkbox" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 border-emerald-700 bg-emerald-800">
+                            <label for="agree" class="ml-2 text-sm opacity-80">I agree to Bulaal's Terms & Privacy Policy</label>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium transition-all transform hover:scale-105 shadow-lg">
+                            Submit Project Request
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="flex flex-col justify-between">
+                    <div class="glass-morphism p-8 rounded-2xl mb-6">
+                        <h3 class="text-2xl font-bold mb-6">Why Work With Us?</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <div class="flex-shrink-0 w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center mr-4 mt-1">
+                                    <i class="fas fa-check text-sm text-white"></i>
+                                </div>
+                                <p class="opacity-90">Industry-leading creative team with 10+ years of experience</p>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="flex-shrink-0 w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center mr-4 mt-1">
+                                    <i class="fas fa-check text-sm text-white"></i>
+                                </div>
+                                <p class="opacity-90">End-to-end production capabilities from concept to delivery</p>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="flex-shrink-0 w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center mr-4 mt-1">
+                                    <i class="fas fa-check text-sm text-white"></i>
+                                </div>
+                                <p class="opacity-90">Cutting-edge technology and innovative techniques</p>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="flex-shrink-0 w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center mr-4 mt-1">
+                                    <i class="fas fa-check text-sm text-white"></i>
+                                </div>
+                                <p class="opacity-90">Transparent pricing and detailed project planning</p>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="flex-shrink-0 w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center mr-4 mt-1">
+                                    <i class="fas fa-check text-sm text-white"></i>
+                                </div>
+                                <p class="opacity-90">Dedicated project manager for seamless communication</p>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-morphism p-8 rounded-2xl">
+                        <h3 class="text-2xl font-bold mb-6">Contact Information</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-emerald-600/30 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-map-marker-alt text-emerald-400"></i>
+                                </div>
+                                <p class="opacity-90">, Studio Bulaale designs, CA 91604</p>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-emerald-600/30 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-phone-alt text-emerald-400"></i>
+                                </div>
+                                <p class="opacity-90">+252 61 7689273</p>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-emerald-600/30 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-envelope text-emerald-400"></i>
+                                </div>
+                                <p class="opacity-90">hello@bulaal.com</p>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-emerald-600/30 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-clock text-emerald-400"></i>
+                                </div>
+                                <p class="opacity-90">Mon-Fri: 9AM - 6PM PST</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex space-x-4 mt-6">
+                            <a href="#" class="w-10 h-10 bg-emerald-600/30 hover:bg-emerald-600 rounded-full flex items-center justify-center transition">
+                                <i class="fab fa-facebook-f text-emerald-300"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-emerald-600/30 hover:bg-emerald-600 rounded-full flex items-center justify-center transition">
+                                <i class="fab fa-twitter text-emerald-300"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-emerald-600/30 hover:bg-emerald-600 rounded-full flex items-center justify-center transition">
+                                <i class="fab fa-instagram text-emerald-300"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-emerald-600/30 hover:bg-emerald-600 rounded-full flex items-center justify-center transition">
+                                <i class="fab fa-linkedin-in text-emerald-300"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-emerald-600/30 hover:bg-emerald-600 rounded-full flex items-center justify-center transition">
+                                <i class="fab fa-behance text-emerald-300"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-emerald-900/80 py-12 relative overflow-hidden">
+        <div class="bubble bg-purple-900 w-96 h-96 -right-40 -bottom-40"></div>
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h4 class="text-lg font-bold mb-4 flex items-center">
+                        <img src="images/logo-1.png" alt="Bulaal Logo" style="width: 24px; height: 24px;" class="rounded-full shadow-lg bg-white/10 mr-2">
+                        BULAAL
+                    </h4>
+                    <p class="opacity-80 mb-4">Creating visual experiences that inspire and engage audiences worldwide.</p>
+                    <div class="flex space-x-2">
+                        <a href="#" class="text-white opacity-70 hover:opacity-100 transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-white opacity-70 hover:opacity-100 transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-white opacity-70 hover:opacity-100 transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-white opacity-70 hover:opacity-100 transition">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="text-white opacity-70 hover:opacity-100 transition">
+                            <i class="fab fa-behance"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-emerald-300 transition">Video Production</a></li>
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-emerald-300 transition">Graphic Design</a></li>
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-emerald-300 transition">Motion Graphics</a></li>
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-emerald-300 transition">Photography</a></li>
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-emerald-300 transition">Web Design</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-emerald-300 transition">About Us</a></li>
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-emerald-300 transition">Our Team</a></li>
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-emerald-300 transition">Careers</a></li>
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-emerald-300 transition">Blog</a></li>
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-emerald-300 transition">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-emerald-300 transition">Portfolio</a></li>
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-emerald-300 transition">Case Studies</a></li>
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-emerald-300 transition">Pricing Guide</a></li>
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-emerald-300 transition">FAQ</a></li>
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-emerald-300 transition">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-emerald-800 flex flex-col md:flex-row justify-between items-center">
+                <p class="opacity-80 mb-4 md:mb-0">© 2025 Bulaal Creative Agency. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="opacity-80 hover:opacity-100 transition">Privacy Policy</a>
+                    <a href="#" class="opacity-80 hover:opacity-100 transition">Terms of Service</a>
+                    <a href="#" class="opacity-80 hover:opacity-100 transition">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to top button -->
+    <a href="#home" class="fixed bottom-6 right-6 w-12 h-12 bg-emerald-600 hover:bg-emerald-700 rounded-full flex items-center justify-center shadow-lg transition-transform transform hover:scale-110 z-50">
+        <i class="fas fa-arrow-up text-white"></i>
+    </a>
+    
+    <script>
+        // Simple scroll animation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Animate elements when they come into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fadeIn');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.card-hover, .text-center').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
