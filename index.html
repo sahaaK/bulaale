@@ -27,8 +27,27 @@
             to { transform: translateY(0); opacity: 1; }
         }
         
+        @keyframes tabContentIn {
+            from { transform: translateX(10px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes tabContentOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(-10px); opacity: 0; }
+        }
+        
         .slide-in {
             animation: slideIn 0.5s ease-out forwards;
+        }
+        
+        .tab-content-in {
+            animation: tabContentIn 0.3s ease-out forwards;
+            display: block;
+        }
+        
+        .tab-content-out {
+            animation: tabContentOut 0.2s ease-out forwards;
         }
         
         .glow {
@@ -36,9 +55,29 @@
         }
         
         .tab-active {
-            transform: perspective(500px) rotateX(10deg);
-            border-bottom-width: 4px;
-            border-bottom-color: #ec4899;
+            position: relative;
+        }
+        
+        .tab-active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #ec4899, #8b5cf6);
+            border-radius: 2px;
+        }
+        
+        .tab-hover::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(236, 72, 153, 0.3);
+            border-radius: 1px;
         }
         
         .item-card:hover {
@@ -48,6 +87,113 @@
         
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
+        }
+        
+        .pill-tab {
+            transition: all 0.3s ease;
+        }
+        
+        .pill-tab-active {
+            background: linear-gradient(90deg, rgba(236, 72, 153, 0.2), rgba(139, 92, 246, 0.2));
+            border-left: 3px solid #ec4899;
+        }
+        
+        .nested-tab-active {
+            background: rgba(236, 72, 153, 0.1);
+            border-radius: 6px;
+            position: relative;
+        }
+        
+        .nested-tab-active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 60%;
+            background: #ec4899;
+            border-radius: 0 3px 3px 0;
+        }
+        
+        .wave-border {
+            position: relative;
+            overflow: hidden;
+            height: 8px;
+        }
+        
+        .wave-border::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(192, 132, 252, 0.3), transparent);
+            animation: wave 3s linear infinite;
+        }
+        
+        @keyframes wave {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .floating-label-group {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .floating-label {
+            position: absolute;
+            pointer-events: none;
+            left: 12px;
+            top: 12px;
+            transition: all 0.2s ease;
+            color: rgba(216, 180, 254, 0.7);
+            font-size: 14px;
+        }
+        
+        input:focus ~ .floating-label,
+        input:not(:focus):valid ~ .floating-label,
+        textarea:focus ~ .floating-label,
+        textarea:not(:focus):valid ~ .floating-label,
+        select:focus ~ .floating-label,
+        select:not(:focus):valid ~ .floating-label {
+            top: -10px;
+            left: 10px;
+            font-size: 12px;
+            opacity: 1;
+            color: #ec4899;
+            background: linear-gradient(0deg, rgba(88, 28, 135, 0.8), rgba(88, 28, 135, 0.9));
+            padding: 0 6px;
+            border-radius: 4px;
+        }
+        
+        .gradient-progress {
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #ec4899, #8b5cf6);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gradient-progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.5), 
+                transparent);
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
     </style>
 </head>
@@ -77,486 +223,1284 @@
             </div>
         </header>
         
-        <!-- Main Tabs -->
-        <div class="flex mb-8 border-b border-purple-700">
-            <button id="pos-tab" class="tab-active px-6 py-3 font-semibold text-lg transition-all duration-300 relative group">
-                Point of Sale
-                <span class="absolute bottom-0 left-0 w-0 h-1 bg-pink-500 group-hover:w-full transition-all duration-300"></span>
-            </button>
-            <button id="inventory-tab" class="px-6 py-3 font-semibold text-lg text-purple-200 transition-all duration-300 relative group">
-                Inventory
-                <span class="absolute bottom-0 left-0 w-0 h-1 bg-pink-500 group-hover:w-full transition-all duration-300"></span>
-            </button>
+        <!-- Main Tabs Navigation with Wave Border -->
+        <div class="mb-6">
+            <div class="flex border-b border-purple-700 relative">
+                <button id="pos-tab-btn" class="tab-active px-6 py-3 font-semibold text-lg transition-all duration-300 relative">
+                    Point of Sale
+                </button>
+                <button id="inventory-tab-btn" class="px-6 py-3 font-semibold text-lg text-purple-200 transition-all duration-300 relative tab-hover">
+                    Inventory
+                </button>
+                <button id="reports-tab-btn" class="px-6 py-3 font-semibold text-lg text-purple-200 transition-all duration-300 relative tab-hover">
+                    Reports
+                </button>
+                <button id="settings-tab-btn" class="px-6 py-3 font-semibold text-lg text-purple-200 transition-all duration-300 relative tab-hover">
+                    Settings
+                </button>
+            </div>
+            <div class="wave-border"></div>
         </div>
         
-        <!-- POS Tab Content -->
-        <div id="pos-content" class="slide-in">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Menu Items -->
-                <div class="lg:col-span-2 bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold text-pink-200">Menu</h2>
-                        <div class="relative">
-                            <input type="text" placeholder="Search menu..." 
-                                   class="bg-purple-900 bg-opacity-50 px-4 py-2 rounded-full w-64 border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
-                            <i class="fas fa-search absolute right-4 top-3 text-purple-300"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Categories -->
-                    <div class="flex space-x-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
-                        <button class="category-btn px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full text-sm font-medium whitespace-nowrap glow">All Items</button>
-                        <button class="category-btn px-4 py-2 bg-purple-700 hover:bg-pink-600 rounded-full text-sm font-medium whitespace-nowrap transition">Appetizers</button>
-                        <button class="category-btn px-4 py-2 bg-purple-700 hover:bg-pink-600 rounded-full text-sm font-medium whitespace-nowrap transition">Main Dishes</button>
-                        <button class="category-btn px-4 py-2 bg-purple-700 hover:bg-pink-600 rounded-full text-sm font-medium whitespace-nowrap transition">Desserts</button>
-                        <button class="category-btn px-4 py-2 bg-purple-700 hover:bg-pink-600 rounded-full text-sm font-medium whitespace-nowrap transition">Beverages</button>
-                        <button class="category-btn px-4 py-2 bg-purple-700 hover:bg-pink-600 rounded-full text-sm font-medium whitespace-nowrap transition">Specials</button>
-                    </div>
-                    
-                    <!-- Menu Grid -->
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <!-- Sample Menu Items -->
-                        <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
-                             onclick="addToOrder('001', 'Truffle Pasta', 24.99, this)">
-                            <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
-                                <i class="fas fa-utensils text-white text-4xl opacity-80"></i>
-                            </div>
-                            <h3 class="font-semibold text-pink-200">Truffle Pasta</h3>
-                            <p class="text-xs text-purple-300 mb-2">Creamy pasta with black truffle</p>
-                            <div class="flex justify-between items-center">
-                                <span class="font-bold text-pink-300">$24.99</span>
-                                <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#001</span>
-                            </div>
-                        </div>
-                        
-                        <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
-                             onclick="addToOrder('002', 'Lobster Risotto', 32.50, this)">
-                            <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
-                                <i class="fas fa-fish text-white text-4xl opacity-80"></i>
-                            </div>
-                            <h3 class="font-semibold text-pink-200">Lobster Risotto</h3>
-                            <p class="text-xs text-purple-300 mb-2">Creamy Arborio rice with lobster</p>
-                            <div class="flex justify-between items-center">
-                                <span class="font-bold text-pink-300">$32.50</span>
-                                <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#002</span>
-                            </div>
-                        </div>
-                        
-                        <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
-                             onclick="addToOrder('003', 'Chocolate Soufflé', 14.99, this)">
-                            <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
-                                <i class="fas fa-ice-cream text-white text-4xl opacity-80"></i>
-                            </div>
-                            <h3 class="font-semibold text-pink-200">Chocolate Soufflé</h3>
-                            <p class="text-xs text-purple-300 mb-2">Warm chocolate delight with ice cream</p>
-                            <div class="flex justify-between items-center">
-                                <span class="font-bold text-pink-300">$14.99</span>
-                                <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#003</span>
-                            </div>
-                        </div>
-                        
-                        <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
-                             onclick="addToOrder('004', 'Sparkling Lemonade', 6.50, this)">
-                            <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
-                                <i class="fas fa-glass-cheers text-white text-4xl opacity-80"></i>
-                            </div>
-                            <h3 class="font-semibold text-pink-200">Sparkling Lemonade</h3>
-                            <p class="text-xs text-purple-300 mb-2">Homemade with fresh lemons</p>
-                            <div class="flex justify-between items-center">
-                                <span class="font-bold text-pink-300">$6.50</span>
-                                <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#004</span>
-                            </div>
-                        </div>
-                        
-                        <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
-                             onclick="addToOrder('005', 'Caprese Salad', 12.75, this)">
-                            <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
-                                <i class="fas fa-leaf text-white text-4xl opacity-80"></i>
-                            </div>
-                            <h3 class="font-semibold text-pink-200">Caprese Salad</h3>
-                            <p class="text-xs text-purple-300 mb-2">Fresh mozzarella, tomatoes & basil</p>
-                            <div class="flex justify-between items-center">
-                                <span class="font-bold text-pink-300">$12.75</span>
-                                <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#005</span>
-                            </div>
-                        </div>
-                        
-                        <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
-                             onclick="addToOrder('006', 'Filet Mignon', 38.99, this)">
-                            <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
-                                <i class="fas fa-drumstick-bite text-white text-4xl opacity-80"></i>
-                            </div>
-                            <h3 class="font-semibold text-pink-200">Filet Mignon</h3>
-                            <p class="text-xs text-purple-300 mb-2">8oz premium cut with truffle butter</p>
-                            <div class="flex justify-between items-center">
-                                <span class="font-bold text-pink-300">$38.99</span>
-                                <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#006</span>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Main Tabs Content -->
+        <div id="tabs-content-container" class="relative min-h-[600px]">
+            <!-- POS Tab Content -->
+            <div id="pos-content" class="tab-content-in">
+                <!-- Nested Tabs for POS -->
+                <div class="flex mb-2">
+                    <button id="order-tab-btn" class="nested-tab-active px-6 py-2 font-medium text-purple-200 transition-all duration-300 mx-1">
+                        New Order
+                    </button>
+                    <button id="tables-tab-btn" class="px-6 py-2 font-medium text-purple-200 transition-all duration-300 mx-1 hover:bg-purple-800 hover:bg-opacity-30 rounded">
+                        Table Status
+                    </button>
+                    <button id="history-tab-btn" class="px-6 py-2 font-medium text-purple-200 transition-all duration-300 mx-1 hover:bg-purple-800 hover:bg-opacity-30 rounded">
+                        Order History
+                    </button>
                 </div>
                 
-                <!-- Order Summary -->
-                <div class="bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold text-pink-200">Current Order</h2>
-                        <div class="flex space-x-2">
-                            <button class="bg-gradient-to-r from-purple-700 to-purple-600 hover:to-pink-500 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300"
-                                    onclick="clearOrder()">
-                                <i class="fas fa-trash-alt mr-1"></i> Clear
-                            </button>
-                            <select class="bg-purple-900 bg-opacity-50 border border-purple-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-pink-400 text-sm">
-                                <option>Table 1</option>
-                                <option>Table 2</option>
-                                <option>Table 3</option>
-                                <option>Table 4</option>
-                                <option>Table 5</option>
-                                <option>Table 6</option>
-                                <option>Takeout</option>
-                                <option>Delivery</option>
-                            </select>
+                <!-- Nested Content for POS -->
+                <div id="pos-nested-content" class="relative min-h-[500px]">
+                    <!-- Order Tab Content -->
+                    <div id="order-content">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <!-- Menu Items -->
+                            <div class="lg:col-span-2 bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-bold text-pink-200">Menu</h2>
+                                    <div class="relative">
+                                        <input type="text" placeholder="Search menu..."
+                                                class="bg-purple-900 bg-opacity-50 px-4 py-2 rounded-full w-64 border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                                        <i class="fas fa-search absolute right-4 top-3 text-purple-300"></i>
+                                    </div>
+                                </div>
+                                
+                                <!-- Categories -->
+                                <div class="flex space-x-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                                    <button class="category-btn px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full text-sm font-medium whitespace-nowrap glow">All Items</button>
+                                    <button class="category-btn px-4 py-2 bg-purple-700 hover:bg-pink-600 rounded-full text-sm font-medium whitespace-nowrap transition">Appetizers</button>
+                                    <button class="category-btn px-4 py-2 bg-purple-700 hover:bg-pink-600 rounded-full text-sm font-medium whitespace-nowrap transition">Main Dishes</button>
+                                    <button class="category-btn px-4 py-2 bg-purple-700 hover:bg-pink-600 rounded-full text-sm font-medium whitespace-nowrap transition">Desserts</button>
+                                    <button class="category-btn px-4 py-2 bg-purple-700 hover:bg-pink-600 rounded-full text-sm font-medium whitespace-nowrap transition">Beverages</button>
+                                    <button class="category-btn px-4 py-2 bg-purple-700 hover:bg-pink-600 rounded-full text-sm font-medium whitespace-nowrap transition">Specials</button>
+                                </div>
+                                
+                                <!-- Menu Grid -->
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    <!-- Sample Menu Items -->
+                                    <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
+                                         onclick="addToOrder('001', 'Truffle Pasta', 24.99, this)">
+                                        <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
+                                            <i class="fas fa-utensils text-white text-4xl opacity-80"></i>
+                                        </div>
+                                        <h3 class="font-semibold text-pink-200">Truffle Pasta</h3>
+                                        <p class="text-xs text-purple-300 mb-2">Creamy pasta with black truffle</p>
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-bold text-pink-300">$24.99</span>
+                                            <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#001</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
+                                         onclick="addToOrder('002', 'Lobster Risotto', 32.50, this)">
+                                        <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
+                                            <i class="fas fa-fish text-white text-4xl opacity-80"></i>
+                                        </div>
+                                        <h3 class="font-semibold text-pink-200">Lobster Risotto</h3>
+                                        <p class="text-xs text-purple-300 mb-2">Creamy Arborio rice with lobster</p>
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-bold text-pink-300">$32.50</span>
+                                            <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#002</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
+                                         onclick="addToOrder('003', 'Chocolate Soufflé', 14.99, this)">
+                                        <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
+                                            <i class="fas fa-ice-cream text-white text-4xl opacity-80"></i>
+                                        </div>
+                                        <h3 class="font-semibold text-pink-200">Chocolate Soufflé</h3>
+                                        <p class="text-xs text-purple-300 mb-2">Warm chocolate delight with ice cream</p>
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-bold text-pink-300">$14.99</span>
+                                            <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#003</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
+                                         onclick="addToOrder('004', 'Sparkling Lemonade', 6.50, this)">
+                                        <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
+                                            <i class="fas fa-glass-cheers text-white text-4xl opacity-80"></i>
+                                        </div>
+                                        <h3 class="font-semibold text-pink-200">Sparkling Lemonade</h3>
+                                        <p class="text-xs text-purple-300 mb-2">Homemade with fresh lemons</p>
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-bold text-pink-300">$6.50</span>
+                                            <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#004</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
+                                         onclick="addToOrder('005', 'Caprese Salad', 12.75, this)">
+                                        <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
+                                            <i class="fas fa-leaf text-white text-4xl opacity-80"></i>
+                                        </div>
+                                        <h3 class="font-semibold text-pink-200">Caprese Salad</h3>
+                                        <p class="text-xs text-purple-300 mb-2">Fresh mozzarella, tomatoes & basil</p>
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-bold text-pink-300">$12.75</span>
+                                            <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#005</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
+                                         onclick="addToOrder('006', 'Filet Mignon', 38.99, this)">
+                                        <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
+                                            <i class="fas fa-drumstick-bite text-white text-4xl opacity-80"></i>
+                                        </div>
+                                        <h3 class="font-semibold text-pink-200">Filet Mignon</h3>
+                                        <p class="text-xs text-purple-300 mb-2">8oz premium cut with truffle butter</p>
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-bold text-pink-300">$38.99</span>
+                                            <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#006</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Order Summary -->
+                            <div class="bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-bold text-pink-200">Current Order</h2>
+                                    <div class="flex space-x-2">
+                                        <button class="bg-gradient-to-r from-purple-700 to-purple-600 hover:to-pink-500 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300"
+                                                onclick="clearOrder()">
+                                            <i class="fas fa-trash-alt mr-1"></i> Clear
+                                        </button>
+                                        <select class="bg-purple-900 bg-opacity-50 border border-purple-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-pink-400 text-sm">
+                                            <option>Table 1</option>
+                                            <option>Table 2</option>
+                                            <option>Table 3</option>
+                                            <option>Table 4</option>
+                                            <option>Table 5</option>
+                                            <option>Table 6</option>
+                                            <option>Takeout</option>
+                                            <option>Delivery</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- Order Items -->
+                                <div id="order-items" class="max-h-96 overflow-y-auto mb-6 pr-2 scrollbar-hide">
+                                    <!-- Order items will be added here -->
+                                    <div id="empty-order" class="flex flex-col items-center justify-center h-64 text-purple-300">
+                                        <i class="fas fa-shopping-basket text-5xl mb-4 opacity-30"></i>
+                                        <p>Your order is empty</p>
+                                        <p class="text-xs mt-2">Click on menu items to add them</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Order Summary -->
+                                <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 mb-4 border border-purple-700">
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-purple-300">Subtotal:</span>
+                                        <span id="subtotal" class="font-medium">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-purple-300">Tax (7%):</span>
+                                        <span id="tax" class="font-medium">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-lg font-bold">
+                                        <span class="text-pink-200">Total:</span>
+                                        <span id="total" class="text-pink-400">$0.00</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                <div class="grid grid-cols-2 gap-3">
+                                    <button class="bg-gradient-to-r from-purple-600 to-pink-500 hover:to-purple-400 px-4 py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center glow hover:glow-lg"
+                                            onclick="processPayment()">
+                                        <i class="fas fa-credit-card mr-2"></i> Payment
+                                    </button>
+                                    <button class="bg-gradient-to-r from-purple-800 to-purple-600 hover:to-pink-500 px-4 py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center"
+                                            onclick="printReceipt()">
+                                        <i class="fas fa-receipt mr-2"></i> Print
+                                    </button>
+                                </div>
+                                
+                                <!-- Quick Actions -->
+                                <div class="mt-4 grid grid-cols-4 gap-2">
+                                    <button class="bg-purple-700 hover:bg-pink-600 p-2 rounded-lg text-xs transition"
+                                            onclick="addDiscount(5)">
+                                        <i class="fas fa-tag mr-1"></i> 5% Off
+                                    </button>
+                                    <button class="bg-purple-700 hover:bg-pink-600 p-2 rounded-lg text-xs transition"
+                                            onclick="addDiscount(10)">
+                                        <i class="fas fa-tag mr-1"></i> 10% Off
+                                    </button>
+                                    <button class="bg-purple-700 hover:bg-pink-600 p-2 rounded-lg text-xs transition"
+                                            onclick="addSpecialRequest()">
+                                        <i class="fas fa-star mr-1"></i> Special
+                                    </button>
+                                    <button class="bg-purple-700 hover:bg-pink-600 p-2 rounded-lg text-xs transition"
+                                            onclick="splitCheck()">
+                                        <i class="fas fa-cut mr-1"></i> Split
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Order Items -->
-                    <div id="order-items" class="max-h-96 overflow-y-auto mb-6 pr-2 scrollbar-hide">
-                        <!-- Order items will be added here -->
-                        <div id="empty-order" class="flex flex-col items-center justify-center h-64 text-purple-300">
-                            <i class="fas fa-shopping-basket text-5xl mb-4 opacity-30"></i>
-                            <p>Your order is empty</p>
-                            <p class="text-xs mt-2">Click on menu items to add them</p>
+                    <!-- Tables Tab Content -->
+                    <div id="tables-content" class="hidden">
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 pt-4">
+                            <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
+                                <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-table text-2xl"></i>
+                                </div>
+                                <h3 class="font-bold text-pink-100">Table 1</h3>
+                                <p class="text-xs text-purple-200">$58.20 • 4 items</p>
+                                <div class="mt-2 flex justify-center space-x-1">
+                                    <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+                                    <span class="text-xxs text-green-300">Active 32m</span>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
+                                <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-motorcycle text-2xl"></i>
+                                </div>
+                                <h3 class="font-bold text-pink-100">Delivery #42</h3>
+                                <p class="text-xs text-purple-200">$112.75 • 8 items</p>
+                                <div class="mt-2 flex justify-center space-x-1">
+                                    <span class="w-2 h-2 bg-yellow-400 rounded-full"></span>
+                                    <span class="text-xxs text-yellow-300">Preparing</span>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
+                                <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-utensils text-2xl"></i>
+                                </div>
+                                <h3 class="font-bold text-pink-100">Table 4</h3>
+                                <p class="text-xs text-purple-200">$89.45 • 5 items</p>
+                                <div class="mt-2 flex justify-center space-x-1">
+                                    <span class="w-2 h-2 bg-blue-400 rounded-full"></span>
+                                    <span class="text-xxs text-blue-300">Served</span>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
+                                <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-box text-2xl"></i>
+                                </div>
+                                <h3 class="font-bold text-pink-100">Takeout #15</h3>
+                                <p class="text-xs text-purple-200">$24.99 • 2 items</p>
+                                <div class="mt-2 flex justify-center space-x-1">
+                                    <span class="w-2 h-2 bg-red-400 rounded-full"></span>
+                                    <span class="text-xxs text-red-300">Ready</span>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
+                                <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-table text-2xl"></i>
+                                </div>
+                                <h3 class="font-bold text-pink-100">Table 3</h3>
+                                <p class="text-xs text-purple-200">$0.00 • Empty</p>
+                                <div class="mt-2 flex justify-center space-x-1">
+                                    <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+                                    <span class="text-xxs text-gray-300">Available</span>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
+                                <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-plus text-2xl"></i>
+                                </div>
+                                <h3 class="font-bold text-pink-100">New Table</h3>
+                                <p class="text-xs text-purple-200">Click to add</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Table Details -->
+                        <div id="table-details" class="mt-8 bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700 hidden">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-pink-200">Table 1 Details</h3>
+                                <button onclick="closeTableDetails()" class="text-purple-300 hover:text-pink-400">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="md:col-span-2">
+                                    <h4 class="text-md font-medium text-pink-200 mb-3">Current Order</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between items-center bg-purple-900 bg-opacity-30 rounded-lg p-3 border border-purple-800">
+                                            <div>
+                                                <p class="font-medium">Truffle Pasta</p>
+                                                <p class="text-xs text-purple-300">#001 • $24.99</p>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <span class="text-sm px-2 py-1 bg-purple-800 rounded">2x</span>
+                                                <button class="text-pink-400 hover:text-pink-300">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center bg-purple-900 bg-opacity-30 rounded-lg p-3 border border-purple-800">
+                                            <div>
+                                                <p class="font-medium">Sparkling Lemonade</p>
+                                                <p class="text-xs text-purple-300">#004 • $6.50</p>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <span class="text-sm px-2 py-1 bg-purple-800 rounded">4x</span>
+                                                <button class="text-pink-400 hover:text-pink-300">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="text-md font-medium text-pink-200 mb-3">Order Summary</h4>
+                                    <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 border border-purple-700">
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-purple-300">Subtotal:</span>
+                                            <span class="font-medium">$58.20</span>
+                                        </div>
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-purple-300">Tax (7%):</span>
+                                            <span class="font-medium">$4.07</span>
+                                        </div>
+                                        <div class="flex justify-between text-lg font-bold">
+                                            <span class="text-pink-200">Total:</span>
+                                            <span class="text-pink-400">$62.27</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <button class="w-full bg-gradient-to-r from-purple-600 to-pink-500 hover:to-purple-400 px-4 py-2 rounded-lg font-medium transition-all duration-300">
+                                            Print Bill
+                                        </button>
+                                        <button class="w-full mt-2 bg-gradient-to-r from-purple-800 to-purple-600 hover:to-pink-500 px-4 py-2 rounded-lg font-medium transition-all duration-300">
+                                            Split Bill
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Order Summary -->
-                    <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 mb-4 border border-purple-700">
-                        <div class="flex justify-between mb-2">
-                            <span class="text-purple-300">Subtotal:</span>
-                            <span id="subtotal" class="font-medium">$0.00</span>
+                    <!-- History Tab Content -->
+                    <div id="history-content" class="hidden">
+                        <div class="bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700 mt-4">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-bold text-pink-200">Today's Orders</h2>
+                                <div class="relative">
+                                    <input type="text" placeholder="Search orders..."
+                                            class="bg-purple-900 bg-opacity-50 px-4 py-2 rounded-full w-64 border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                                    <i class="fas fa-search absolute right-4 top-3 text-purple-300"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-purple-700">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Order #</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Time</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Type</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Items</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Total</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-purple-800">
+                                        <tr class="hover:bg-purple-800 transition">
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200 font-medium">#1423</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">7:30 PM</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-800">Table 4</span>
+                                            </td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">5</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-300">$89.45</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                <span class="px-2 py-1 rounded-full text-xs font-medium bg-green-900 bg-opacity-40 text-green-400">Paid</span>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-purple-800 transition">
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200 font-medium">#1422</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">6:45 PM</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-800">Delivery</span>
+                                            </td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">8</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-300">$112.75</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                <span class="px-2 py-1 rounded-full text-xs font-medium bg-blue-900 bg-opacity-40 text-blue-400">Delivered</span>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-purple-800 transition">
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200 font-medium">#1421</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">5:15 PM</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-800">Table 1</span>
+                                            </td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">4</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-300">$58.20</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                <span class="px-2 py-1 rounded-full text-xs font-medium bg-yellow-900 bg-opacity-40 text-yellow-400">Pending</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="flex justify-between mb-2">
-                            <span class="text-purple-300">Tax (7%):</span>
-                            <span id="tax" class="font-medium">$0.00</span>
-                        </div>
-                        <div class="flex justify-between text-lg font-bold">
-                            <span class="text-pink-200">Total:</span>
-                            <span id="total" class="text-pink-400">$0.00</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Action Buttons -->
-                    <div class="grid grid-cols-2 gap-3">
-                        <button class="bg-gradient-to-r from-purple-600 to-pink-500 hover:to-purple-400 px-4 py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center glow hover:glow-lg"
-                                onclick="processPayment()">
-                            <i class="fas fa-credit-card mr-2"></i> Payment
-                        </button>
-                        <button class="bg-gradient-to-r from-purple-800 to-purple-600 hover:to-pink-500 px-4 py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center"
-                                onclick="printReceipt()">
-                            <i class="fas fa-receipt mr-2"></i> Print
-                        </button>
-                    </div>
-                    
-                    <!-- Quick Actions -->
-                    <div class="mt-4 grid grid-cols-4 gap-2">
-                        <button class="bg-purple-700 hover:bg-pink-600 p-2 rounded-lg text-xs transition"
-                                onclick="addDiscount(5)">
-                            <i class="fas fa-tag mr-1"></i> 5% Off
-                        </button>
-                        <button class="bg-purple-700 hover:bg-pink-600 p-2 rounded-lg text-xs transition"
-                                onclick="addDiscount(10)">
-                            <i class="fas fa-tag mr-1"></i> 10% Off
-                        </button>
-                        <button class="bg-purple-700 hover:bg-pink-600 p-2 rounded-lg text-xs transition"
-                                onclick="addSpecialRequest()">
-                            <i class="fas fa-star mr-1"></i> Special
-                        </button>
-                        <button class="bg-purple-700 hover:bg-pink-600 p-2 rounded-lg text-xs transition"
-                                onclick="splitCheck()">
-                            <i class="fas fa-cut mr-1"></i> Split
-                        </button>
                     </div>
                 </div>
             </div>
             
-            <!-- Recent Orders -->
-            <div class="mt-8 bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
-                <h2 class="text-xl font-bold text-pink-200 mb-4">Active Tables</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                    <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
-                        <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
-                            <i class="fas fa-table text-2xl"></i>
-                        </div>
-                        <h3 class="font-bold text-pink-100">Table 1</h3>
-                        <p class="text-xs text-purple-200">$58.20 • 4 items</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
-                        <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
-                            <i class="fas fa-motorcycle text-2xl"></i>
-                        </div>
-                        <h3 class="font-bold text-pink-100">Delivery #42</h3>
-                        <p class="text-xs text-purple-200">$112.75 • 8 items</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
-                        <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
-                            <i class="fas fa-utensils text-2xl"></i>
-                        </div>
-                        <h3 class="font-bold text-pink-100">Table 4</h3>
-                        <p class="text-xs text-purple-200">$89.45 • 5 items</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
-                        <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
-                            <i class="fas fa-box text-2xl"></i>
-                        </div>
-                        <h3 class="font-bold text-pink-100">Takeout #15</h3>
-                        <p class="text-xs text-purple-200">$24.99 • 2 items</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
-                        <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
-                            <i class="fas fa-table text-2xl"></i>
-                        </div>
-                        <h3 class="font-bold text-pink-100">Table 3</h3>
-                        <p class="text-xs text-purple-200">$0.00 • Empty</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
-                        <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
-                            <i class="fas fa-plus text-2xl"></i>
-                        </div>
-                        <h3 class="font-bold text-pink-100">New Table</h3>
-                        <p class="text-xs text-purple-200">Click to add</p>
-                    </div>
+            <!-- Inventory Tab Content -->
+            <div id="inventory-content" class="hidden">
+                <!-- Nested Tabs for Inventory -->
+                <div class="flex mb-2">
+                    <button id="items-tab-btn" class="nested-tab-active px-6 py-2 font-medium text-purple-200 transition-all duration-300 mx-1">
+                        Items
+                    </button>
+                    <button id="suppliers-tab-btn" class="px-6 py-2 font-medium text-purple-200 transition-all duration-300 mx-1 hover:bg-purple-800 hover:bg-opacity-30 rounded">
+                        Suppliers
+                    </button>
+                    <button id="categories-tab-btn" class="px-6 py-2 font-medium text-purple-200 transition-all duration-300 mx-1 hover:bg-purple-800 hover:bg-opacity-30 rounded">
+                        Categories
+                    </button>
+                    <button id="reorder-tab-btn" class="px-6 py-2 font-medium text-purple-200 transition-all duration-300 mx-1 hover:bg-purple-800 hover:bg-opacity-30 rounded">
+                        Reorder
+                    </button>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Inventory Tab Content -->
-        <div id="inventory-content" class="hidden slide-in">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Inventory List -->
-                <div class="lg:col-span-2 bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold text-pink-200">Inventory Management</h2>
-                        <div class="flex space-x-2">
-                            <button class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-lg text-sm font-medium glow"
-                                    onclick="openAddItemModal()">
-                                <i class="fas fa-plus mr-1"></i> Add Item
-                            </button>
-                            <button class="bg-purple-700 hover:bg-pink-600 px-4 py-2 rounded-lg text-sm font-medium transition">
-                                <i class="fas fa-filter mr-1"></i> Filter
-                            </button>
+                
+                <!-- Nested Content for Inventory -->
+                <div id="inventory-nested-content" class="relative min-h-[500px]">
+                    <!-- Items Tab Content -->
+                    <div id="items-content">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <!-- Inventory List -->
+                            <div class="lg:col-span-2 bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-bold text-pink-200">Inventory Management</h2>
+                                    <div class="flex space-x-2">
+                                        <button class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-lg text-sm font-medium glow"
+                                                onclick="openAddItemModal()">
+                                            <i class="fas fa-plus mr-1"></i> Add Item
+                                        </button>
+                                        <button class="bg-purple-700 hover:bg-pink-600 px-4 py-2 rounded-lg text-sm font-medium transition">
+                                            <i class="fas fa-filter mr-1"></i> Filter
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Inventory Table -->
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-purple-700">
+                                        <thead>
+                                            <tr>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">ID</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Item</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Category</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Stock</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Price</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-purple-800">
+                                            <!-- Sample Inventory Items -->
+                                            <tr class="hover:bg-purple-800 transition">
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">001</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Truffle Pasta</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Main Dishes</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-700 to-green-500">In Stock: 42</span>
+                                                </td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-pink-300 font-medium">$24.99</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                    <button class="text-purple-300 hover:text-pink-400 mr-2" onclick="editInventoryItem('001')">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="text-purple-300 hover:text-pink-400" onclick="removeInventoryItem('001')">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr class="hover:bg-purple-800 transition">
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">002</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Lobster Risotto</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Main Dishes</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-yellow-700 to-yellow-500">Low Stock: 8</span>
+                                                </td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-pink-300 font-medium">$32.50</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                    <button class="text-purple-300 hover:text-pink-400 mr-2" onclick="editInventoryItem('002')">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="text-purple-300 hover:text-pink-400" onclick="removeInventoryItem('002')">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr class="hover:bg-purple-800 transition">
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">004</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Sparkling Lemonade</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Beverages</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-700 to-green-500">In Stock: 27</span>
+                                                </td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-pink-300 font-medium">$6.50</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                    <button class="text-purple-300 hover:text-pink-400 mr-2" onclick="editInventoryItem('004')">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="text-purple-300 hover:text-pink-400" onclick="removeInventoryItem('004')">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr class="hover:bg-purple-800 transition">
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">006</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Filet Mignon</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Main Dishes</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-red-700 to-red-500">Out of Stock</span>
+                                                </td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-pink-300 font-medium">$38.99</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                    <button class="text-purple-300 hover:text-pink-400 mr-2" onclick="editInventoryItem('006')">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="text-purple-300 hover:text-pink-400" onclick="removeInventoryItem('006')">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <!-- Inventory Stats & Orders -->
+                            <div class="bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
+                                <h2 class="text-xl font-bold text-pink-200 mb-6">Inventory Stats</h2>
+                                
+                                <!-- Stats Cards -->
+                                <div class="grid grid-cols-2 gap-4 mb-6">
+                                    <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 border border-purple-700">
+                                        <h3 class="text-sm font-medium text-purple-300 mb-1">Total Items</h3>
+                                        <p class="text-2xl font-bold text-pink-300">47</p>
+                                    </div>
+                                    <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 border border-purple-700">
+                                        <h3 class="text-sm font-medium text-purple-300 mb-1">Low Stock</h3>
+                                        <p class="text-2xl font-bold text-yellow-400">5</p>
+                                    </div>
+                                    <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 border border-purple-700">
+                                        <h3 class="text-sm font-medium text-purple-300 mb-1">Out of Stock</h3>
+                                        <p class="text-2xl font-bold text-red-400">3</p>
+                                    </div>
+                                    <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 border border-purple-700">
+                                        <h3 class="text-sm font-medium text-purple-300 mb-1">Categories</h3>
+                                        <p class="text-2xl font-bold text-green-400">6</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Stock Alerts -->
+                                <div class="mb-6">
+                                    <h3 class="text-lg font-semibold text-pink-200 mb-3">Stock Alerts</h3>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between bg-red-900 bg-opacity-30 rounded-lg p-3 border border-red-700">
+                                            <div>
+                                                <p class="text-sm font-medium">Filet Mignon</p>
+                                                <p class="text-xs text-purple-300">Completely out of stock</p>
+                                            </div>
+                                            <button class="text-xs bg-red-600 hover:bg-red-500 px-3 py-1 rounded-full transition">
+                                                Order Now
+                                            </button>
+                                        </div>
+                                        <div class="flex items-center justify-between bg-yellow-900 bg-opacity-30 rounded-lg p-3 border border-yellow-700">
+                                            <div>
+                                                <p class="text-sm font-medium">Lobster Tail</p>
+                                                <p class="text-xs text-purple-300">Low stock: 5 remaining</p>
+                                            </div>
+                                            <button class="text-xs bg-yellow-600 hover:bg-yellow-500 px-3 py-1 rounded-full transition">
+                                                Reorder
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Recent Orders -->
+                                <div>
+                                    <h3 class="text-lg font-semiboid text-pink-200 mb-3">Recent Suppliers</h3>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center space-x-3 bg-purple-900 bg-opacity-20 rounded-lg p-3 border border-purple-700 hover:bg-opacity-40 transition">
+                                            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
+                                                <i class="fas fa-truck text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium">Fresh Farm Co.</p>
+                                                <p class="text-xs text-purple-300">Last order: 2 days ago</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3 bg-purple-900 bg-opacity-20 rounded-lg p-3 border border-purple-700 hover:bg-opacity-40 transition">
+                                            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
+                                                <i class="fas fa-fish text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium">Ocean Seafood</p>
+                                                <p class="text-xs text-purple-300">Last order: 1 week ago</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Recent Inventory Changes -->
+                        <div class="mt-8 bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
+                            <h2 class="text-xl font-bold text-pink-200 mb-4">Recent Inventory Changes</h2>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-purple-700">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Date</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Item</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Change</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">By</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Note</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-purple-800">
+                                        <tr class="hover:bg-purple-800 transition">
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Today, 10:45 AM</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Truffle Pasta</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-800 to-green-600">+12</span>
+                                            </td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Jessica</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Restocked</td>
+                                        </tr>
+                                        <tr class="hover:bg-purple-800 transition">
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Today, 9:30 AM</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Filet Mignon</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-red-800 to-red-600">-2</span>
+                                            </td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">System</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Sold</td>
+                                        </tr>
+                                        <tr class="hover:bg-purple-800 transition">
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Yesterday, 5:15 PM</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Lobster Risotto</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-red-800 to-red-600">-1</span>
+                                            </td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">System</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Sold</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Inventory Table -->
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-purple-700">
-                            <thead>
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">ID</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Item</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Category</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Stock</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Price</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-purple-800">
-                                <!-- Sample Inventory Items -->
-                                <tr class="hover:bg-purple-800 transition">
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">001</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Truffle Pasta</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Main Dishes</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
-                                        <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-700 to-green-500">In Stock: 42</span>
-                                    </td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-pink-300 font-medium">$24.99</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
-                                        <button class="text-purple-300 hover:text-pink-400 mr-2" onclick="editInventoryItem('001')">
+                    <!-- Suppliers Tab Content -->
+                    <div id="suppliers-content" class="hidden">
+                        <div class="bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700 mt-4">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-bold text-pink-200">Supplier Directory</h2>
+                                <button class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-lg text-sm font-medium glow"
+                                        onclick="openAddSupplierModal()">
+                                    <i class="fas fa-plus mr-1"></i> Add Supplier
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 hover:shadow-lg transition">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-bold text-pink-100">Fresh Farm Co.</h3>
+                                            <p class="text-xs text-purple-300">Produce Supplier</p>
+                                        </div>
+                                        <span class="text-xs px-2 py-1 bg-purple-800 rounded-full">Primary</span>
+                                    </div>
+                                    <div class="mt-4">
+                                        <div class="flex items-center text-sm text-purple-200 mb-1">
+                                            <i class="fas fa-phone-alt mr-2 text-xs"></i>
+                                            <span>(555) 123-4567</span>
+                                        </div>
+                                        <div class="flex items-center text-sm text-purple-200 mb-1">
+                                            <i class="fas fa-envelope mr-2 text-xs"></i>
+                                            <span>contact@freshfarm.com</span>
+                                        </div>
+                                        <div class="flex items-center text-sm text-purple-200">
+                                            <i class="fas fa-map-marker-alt mr-2 text-xs"></i>
+                                            <span>123 Farm Rd, NY</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-end mt-4 space-x-2">
+                                        <button class="text-purple-300 hover:text-pink-400">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="text-purple-300 hover:text-pink-400" onclick="removeInventoryItem('001')">
+                                        <button class="text-purple-300 hover:text-pink-400">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                                 
-                                <tr class="hover:bg-purple-800 transition">
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">002</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Lobster Risotto</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Main Dishes</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
-                                        <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-yellow-700 to-yellow-500">Low Stock: 8</span>
-                                    </td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-pink-300 font-medium">$32.50</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
-                                        <button class="text-purple-300 hover:text-pink-400 mr-2" onclick="editInventoryItem('002')">
+                                <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 hover:shadow-lg transition">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-bold text-pink-100">Ocean Seafood</h3>
+                                            <p class="text-xs text-purple-300">Seafood Supplier</p>
+                                        </div>
+                                        <span class="text-xs px-2 py-1 bg-purple-800 rounded-full">Secondary</span>
+                                    </div>
+                                    <div class="mt-4">
+                                        <div class="flex items-center text-sm text-purple-200 mb-1">
+                                            <i class="fas fa-phone-alt mr-2 text-xs"></i>
+                                            <span>(555) 987-6543</span>
+                                        </div>
+                                        <div class="flex items-center text-sm text-purple-200 mb-1">
+                                            <i class="fas fa-envelope mr-2 text-xs"></i>
+                                            <span>orders@oceanseafood.com</span>
+                                        </div>
+                                        <div class="flex items-center text-sm text-purple-200">
+                                            <i class="fas fa-map-marker-alt mr-2 text-xs"></i>
+                                            <span>456 Harbor St, NJ</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-end mt-4 space-x-2">
+                                        <button class="text-purple-300 hover:text-pink-400">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="text-purple-300 hover:text-pink-400" onclick="removeInventoryItem('002')">
+                                        <button class="text-purple-300 hover:text-pink-400">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                                 
-                                <tr class="hover:bg-purple-800 transition">
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">004</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Sparkling Lemonade</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Beverages</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
-                                        <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-700 to-green-500">In Stock: 27</span>
-                                    </td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-pink-300 font-medium">$6.50</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
-                                        <button class="text-purple-300 hover:text-pink-400 mr-2" onclick="editInventoryItem('004')">
+                                <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 hover:shadow-lg transition">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-bold text-pink-100">Prime Meat Co.</h3>
+                                            <p class="text-xs text-purple-300">Meat Supplier</p>
+                                        </div>
+                                        <span class="text-xs px-2 py-1 bg-purple-800 rounded-full">Secondary</span>
+                                    </div>
+                                    <div class="mt-4">
+                                        <div class="flex items-center text-sm text-purple-200 mb-1">
+                                            <i class="fas fa-phone-alt mr-2 text-xs"></i>
+                                            <span>(555) 555-7890</span>
+                                        </div>
+                                        <div class="flex items-center text-sm text-purple-200 mb-1">
+                                            <i class="fas fa-envelope mr-2 text-xs"></i>
+                                            <span>sales@primemeat.com</span>
+                                        </div>
+                                        <div class="flex items-center text-sm text-purple-200">
+                                            <i class="fas fa-map-marker-alt mr-2 text-xs"></i>
+                                            <span>789 Ranch Rd, TX</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-end mt-4 space-x-2">
+                                        <button class="text-purple-300 hover:text-pink-400">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="text-purple-300 hover:text-pink-400" onclick="removeInventoryItem('004')">
+                                        <button class="text-purple-300 hover:text-pink-400">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                                 
-                                <tr class="hover:bg-purple-800 transition">
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">006</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Filet Mignon</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Main Dishes</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
-                                        <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-red-700 to-red-500">Out of Stock</span>
-                                    </td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-pink-300 font-medium">$38.99</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
-                                        <button class="text-purple-300 hover:text-pink-400 mr-2" onclick="editInventoryItem('006')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="text-purple-300 hover:text-pink-400" onclick="removeInventoryItem('006')">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Categories Tab Content -->
+                    <div id="categories-content" class="hidden">
+                        <div class="bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700 mt-4">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-bold text-pink-200">Menu Categories</h2>
+                                <button class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-lg text-sm font-medium glow"
+                                        onclick="openAddCategoryModal()">
+                                    <i class="fas fa-plus mr-1"></i> Add Category
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 flex items-start hover:shadow-lg transition">
+                                    <div class="w-12 h-12 rounded-full bg-purple-800 bg-opacity-50 flex items-center justify-center mr-4">
+                                        <i class="fas fa-glass-cheers text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="font-bold text-pink-100">Beverages</h3>
+                                        <p class="text-xs text-purple-300 mb-2">12 items</p>
+                                        <div class="w-full bg-purple-900 rounded-full h-1.5 mb-4">
+                                            <div class="bg-pink-500 h-1.5 rounded-full" style="width: 85%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 flex items-start hover:shadow-lg transition">
+                                    <div class="w-12 h-12 rounded-full bg-purple-800 bg-opacity-50 flex items-center justify-center mr-4">
+                                        <i class="fas fa-utensils text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="font-bold text-pink-100">Main Dishes</h3>
+                                        <p class="text-xs text-purple-300 mb-2">18 items</p>
+                                        <div class="w-full bg-purple-900 rounded-full h-1.5 mb-4">
+                                            <div class="bg-purple-400 h-1.5 rounded-full" style="width: 72%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 flex items-start hover:shadow-lg transition">
+                                    <div class="w-12 h-12 rounded-full bg-purple-800 bg-opacity-50 flex items-center justify-center mr-4">
+                                        <i class="fas fa-leaf text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="font-bold text-pink-100">Appetizers</h3>
+                                        <p class="text-xs text-purple-300 mb-2">8 items</p>
+                                        <div class="w-full bg-purple-900 rounded-full h-1.5 mb-4">
+                                            <div class="bg-blue-400 h-1.5 rounded-full" style="width: 45%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 flex items-start hover:shadow-lg transition">
+                                    <div class="w-12 h-12 rounded-full bg-purple-800 bg-opacity-50 flex items-center justify-center mr-4">
+                                        <i class="fas fa-ice-cream text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="font-bold text-pink-100">Desserts</h3>
+                                        <p class="text-xs text-purple-300 mb-2">6 items</p>
+                                        <div class="w-full bg-purple-900 rounded-full h-1.5 mb-4">
+                                            <div class="bg-yellow-400 h-1.5 rounded-full" style="width: 30%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 flex items-start hover:shadow-lg transition">
+                                    <div class="w-12 h-12 rounded-full bg-purple-800 bg-opacity-50 flex items-center justify-center mr-4">
+                                        <i class="fas fa-star text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="font-bold text-pink-100">Specials</h3>
+                                        <p class="text-xs text-purple-300 mb-2">3 items</p>
+                                        <div class="w-full bg-purple-900 rounded-full h-1.5 mb-4">
+                                            <div class="bg-green-400 h-1.5 rounded-full" style="width: 25%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reorder Tab Content -->
+                    <div id="reorder-content" class="hidden">
+                        <div class="bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700 mt-4">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-bold text-pink-200">Stock Replenishment</h2>
+                                <button class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-lg text-sm font-medium glow">
+                                    <i class="fas fa-file-export mr-1"></i> Export List
+                                </button>
+                            </div>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-purple-700">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Item</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Current Stock</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Reorder At</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Supplier</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Last Ordered</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-purple-800">
+                                        <tr class="hover:bg-purple-800 transition">
+                                            <td class="px-4 py-3 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div class="flex-shrink-0 h-10 w-10 bg-purple-700 rounded-full flex items-center justify-center">
+                                                        <i class="fas fa-fish text-sm"></i>
+                                                    </div>
+                                                    <div class="ml-4">
+                                                        <div class="text-sm font-medium text-pink-200">Lobster Tail</div>
+                                                        <div class="text-xs text-purple-300">#013</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-4 py-3 whitespace-nowrap">
+                                                <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-yellow-700 to-yellow-500">5 left</span>
+                                            </td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">10</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Ocean Seafood</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">3 days ago</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                <button class="bg-green-600 hover:bg-green-500 px-3 py-1 rounded-full text-xs font-medium transition">
+                                                    Reorder Now
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr class="hover:bg-purple-800 transition">
+                                            <td class="px-4 py-3 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div class="flex-shrink-0 h-10 w-10 bg-purple-700 rounded-full flex items-center justify-center">
+                                                        <i class="fas fa-drumstick-bite text-sm"></i>
+                                                    </div>
+                                                    <div class="ml-4">
+                                                        <div class="text-sm font-medium text-pink-200">Filet Mignon</div>
+                                                        <div class="text-xs text-purple-300">#006</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-4 py-3 whitespace-nowrap">
+                                                <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-red-700 to-red-500">Out of stock</span>
+                                            </td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">5</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Prime Meat Co.</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">1 week ago</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                <button class="bg-green-600 hover:bg-green-500 px-3 py-1 rounded-full text-xs font-medium transition">
+                                                    Reorder Now
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr class="hover:bg-purple-800 transition">
+                                            <td class="px-4 py-3 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div class="flex-shrink-0 h-10 w-10 bg-purple-700 rounded-full flex items-center justify-center">
+                                                        <i class="fas fa-cheese text-sm"></i>
+                                                    </div>
+                                                    <div class="ml-4">
+                                                        <div class="text-sm font-medium text-pink-200">Truffle Oil</div>
+                                                        <div class="text-xs text-purple-300">#108</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-4 py-3 whitespace-nowrap">
+                                                <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-yellow-700 to-yellow-500">3 left</span>
+                                            </td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">5</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Deluxe Gourmet</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">2 weeks ago</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                <button class="bg-green-600 hover:bg-green-500 px-3 py-1 rounded-full text-xs font-medium transition">
+                                                    Reorder Now
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-                <!-- Inventory Stats & Orders -->
+            </div>
+            
+            <!-- Reports Tab Content -->
+            <div id="reports-content" class="hidden">
                 <div class="bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
-                    <h2 class="text-xl font-bold text-pink-200 mb-6">Inventory Stats</h2>
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-pink-200">Business Analytics</h2>
+                        <div class="flex space-x-2">
+                            <select class="bg-purple-900 bg-opacity-50 border border-purple-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-pink-400 text-sm">
+                                <option>Today</option>
+                                <option>This Week</option>
+                                <option selected>This Month</option>
+                                <option>This Quarter</option>
+                                <option>This Year</option>
+                                <option>Custom Range</option>
+                            </select>
+                            <button class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-lg text-sm font-medium glow">
+                                <i class="fas fa-download mr-1"></i> Export
+                            </button>
+                        </div>
+                    </div>
                     
                     <!-- Stats Cards -->
-                    <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                         <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 border border-purple-700">
-                            <h3 class="text-sm font-medium text-purple-300 mb-1">Total Items</h3>
-                            <p class="text-2xl font-bold text-pink-300">47</p>
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-sm font-medium text-purple-300 mb-1">Total Revenue</h3>
+                                    <p class="text-2xl font-bold text-pink-300">$24,850</p>
+                                </div>
+                                <span class="text-xs px-2 py-1 rounded-full bg-green-900 bg-opacity-40 text-green-400">+12%</span>
+                            </div>
+                            <div class="gradient-progress w-full mt-2"></div>
                         </div>
                         <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 border border-purple-700">
-                            <h3 class="text-sm font-medium text-purple-300 mb-1">Low Stock</h3>
-                            <p class="text-2xl font-bold text-yellow-400">5</p>
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-sm font-medium text-purple-300 mb-1">Total Orders</h3>
+                                    <p class="text-2xl font-bold text-pink-300">392</p>
+                                </div>
+                                <span class="text-xs px-2 py-1 rounded-full bg-green-900 bg-opacity-40 text-green-400">+8%</span>
+                            </div>
+                            <div class="gradient-progress w-full mt-2"></div>
                         </div>
                         <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 border border-purple-700">
-                            <h3 class="text-sm font-medium text-purple-300 mb-1">Out of Stock</h3>
-                            <p class="text-2xl font-bold text-red-400">3</p>
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-sm font-medium text-purple-300 mb-1">Avg. Order Value</h3>
+                                    <p class="text-2xl font-bold text-pink-300">$63.39</p>
+                                </div>
+                                <span class="text-xs px-2 py-1 rounded-full bg-green-900 bg-opacity-40 text-green-400">+4%</span>
+                            </div>
+                            <div class="gradient-progress w-full mt-2"></div>
                         </div>
                         <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 border border-purple-700">
-                            <h3 class="text-sm font-medium text-purple-300 mb-1">Categories</h3>
-                            <p class="text-2xl font-bold text-green-400">6</p>
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-sm font-medium text-purple-300 mb-1">Best Selling</h3>
+                                    <p class="text-lg font-bold text-pink-300">Truffle Pasta</p>
+                                </div>
+                                <span class="text-xs px-2 py-1 rounded-full bg-purple-800">62 sold</span>
+                            </div>
+                            <div class="gradient-progress w-full mt-2"></div>
                         </div>
                     </div>
                     
-                    <!-- Stock Alerts -->
-                    <div class="mb-6">
-                        <h3 class="text-lg font-semibold text-pink-200 mb-3">Stock Alerts</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between bg-red-900 bg-opacity-30 rounded-lg p-3 border border-red-700">
-                                <div>
-                                    <p class="text-sm font-medium">Filet Mignon</p>
-                                    <p class="text-xs text-purple-300">Completely out of stock</p>
-                                </div>
-                                <button class="text-xs bg-red-600 hover:bg-red-500 px-3 py-1 rounded-full transition">
-                                    Order Now
-                                </button>
+                    <!-- Charts Row -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                        <!-- Sales Chart -->
+                        <div class="lg:col-span-2 bg-purple-900 bg-opacity-30 rounded-2xl p-6 border border-purple-700">
+                            <h3 class="text-lg font-semibold text-pink-200 mb-4">Sales Performance</h3>
+                            <div class="h-64 flex items-center justify-center text-purple-400">
+                                <p>Sales chart visualization would appear here</p>
                             </div>
-                            <div class="flex items-center justify-between bg-yellow-900 bg-opacity-30 rounded-lg p-3 border border-yellow-700">
+                        </div>
+                        
+                        <!-- Top Items Chart -->
+                        <div class="bg-purple-900 bg-opacity-30 rounded-2xl p-6 border border-purple-700">
+                            <h3 class="text-lg font-semibold text-pink-200 mb-4">Top Menu Items</h3>
+                            <div class="space-y-3">
                                 <div>
-                                    <p class="text-sm font-medium">Lobster Tail</p>
-                                    <p class="text-xs text-purple-300">Low stock: 5 remaining</p>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-pink-200 font-medium">1. Truffle Pasta</span>
+                                        <span class="text-purple-300">62 sales</span>
+                                    </div>
+                                    <div class="w-full bg-purple-800 rounded-full h-2">
+                                        <div class="bg-pink-500 h-2 rounded-full" style="width: 100%"></div>
+                                    </div>
                                 </div>
-                                <button class="text-xs bg-yellow-600 hover:bg-yellow-500 px-3 py-1 rounded-full transition">
-                                    Reorder
-                                </button>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-pink-200 font-medium">2. Lobster Risotto</span>
+                                        <span class="text-purple-300">48 sales</span>
+                                    </div>
+                                    <div class="w-full bg-purple-800 rounded-full h-2">
+                                        <div class="bg-purple-400 h-2 rounded-full" style="width: 77%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-pink-200 font-medium">3. Filet Mignon</span>
+                                        <span class="text-purple-300">41 sales</span>
+                                    </div>
+                                    <div class="w-full bg-purple-800 rounded-full h-2">
+                                        <div class="bg-blue-400 h-2 rounded-full" style="width: 66%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-pink-200 font-medium">4. Chocolate Soufflé</span>
+                                        <span class="text-purple-300">37 sales</span>
+                                    </div>
+                                    <div class="w-full bg-purple-800 rounded-full h-2">
+                                        <div class="bg-yellow-400 h-2 rounded-full" style="width: 60%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-pink-200 font-medium">5. Sparkling Lemonade</span>
+                                        <span class="text-purple-300">34 sales</span>
+                                    </div>
+                                    <div class="w-full bg-purple-800 rounded-full h-2">
+                                        <div class="bg-green-400 h-2 rounded-full" style="width: 55%"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Recent Orders -->
-                    <div>
-                        <h3 class="text-lg font-semibold text-pink-200 mb-3">Recent Suppliers</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center space-x-3 bg-purple-900 bg-opacity-20 rounded-lg p-3 border border-purple-700 hover:bg-opacity-40 transition">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
-                                    <i class="fas fa-truck text-sm"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium">Fresh Farm Co.</p>
-                                    <p class="text-xs text-purple-300">Last order: 2 days ago</p>
-                                </div>
+                    <!-- Detailed Reports -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Server Performance -->
+                        <div class="bg-purple-900 bg-opacity-30 rounded-2xl p-6 border border-purple-700">
+                            <h3 class="text-lg font-semibold text-pink-200 mb-4">Server Performance</h3>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-purple-700">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Server</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Sales</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Avg. Tip %</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Rating</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-purple-800">
+                                        <tr class="hover:bg-purple-800 transition">
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Jessica</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">$8,750</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">18.5%</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-star text-yellow-400"></i>
+                                                    <i class="fas fa-star text-yellow-400"></i>
+                                                    <i class="fas fa-star text-yellow-400"></i>
+                                                    <i class="fas fa-star text-yellow-400"></i>
+                                                    <i class="fas fa-star-half-alt text-yellow-400"></i>
+                                                    <span class="ml-1 text-xs text-purple-300">4.6</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-purple-800 transition">
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Michael</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">$7,420</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">16.2%</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-star text-yellow-400"></i>
+                                                    <i class="fas fa-star text-yellow-400"></i>
+                                                    <i class="fas fa-star text-yellow-400"></i>
+                                                    <i class="fas fa-star text-yellow-400"></i>
+                                                    <i class="far fa-star text-yellow-400"></i>
+                                                    <span class="ml-1 text-xs text-purple-300">4.2</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-purple-800 transition">
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Sarah</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">$5,890</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">15.8%</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-star text-yellow-400"></i>
+                                                    <i class="fas fa-star text-yellow-400"></i>
+                                                    <i class="fas fa-star text-yellow-400"></i>
+                                                    <i class="fas fa-star text-yellow-400"></i>
+                                                    <i class="far fa-star text-yellow-400"></i>
+                                                    <span class="ml-1 text-xs text-purple-300">4.1</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="flex items-center space-x-3 bg-purple-900 bg-opacity-20 rounded-lg p-3 border border-purple-700 hover:bg-opacity-40 transition">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
-                                    <i class="fas fa-fish text-sm"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium">Ocean Seafood</p>
-                                    <p class="text-xs text-purple-300">Last order: 1 week ago</p>
-                                </div>
+                        </div>
+                        
+                        <!-- Time-of-Day Performance -->
+                        <div class="bg-purple-900 bg-opacity-30 rounded-2xl p-6 border border-purple-700">
+                            <h3 class="text-lg font-semibold text-pink-200 mb-4">Peak Hours Analysis</h3>
+                            <div class="h-64 flex items-center justify-center text-purple-400">
+                                <p>Hourly performance chart visualization would appear here</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Recent Inventory Changes -->
-            <div class="mt-8 bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
-                <h2 class="text-xl font-bold text-pink-200 mb-4">Recent Inventory Changes</h2>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-purple-700">
-                        <thead>
-                            <tr>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Date</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Item</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Change</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">By</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Note</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-purple-800">
-                            <tr class="hover:bg-purple-800 transition">
-                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Today, 10:45 AM</td>
-                                <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Truffle Pasta</td>
-                                <td class="px-4 py-3 whitespace-nowrap text-sm">
-                                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-800 to-green-600">+12</span>
-                                </td>
-                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Jessica</td>
-                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Restocked</td>
-                            </tr>
-                            <tr class="hover:bg-purple-800 transition">
-                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Today, 9:30 AM</td>
-                                <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Filet Mignon</td>
-                                <td class="px-4 py-3 whitespace-nowrap text-sm">
-                                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-red-800 to-red-600">-2</span>
-                                </td>
-                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">System</td>
-                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Sold</td>
-                            </tr>
-                            <tr class="hover:bg-purple-800 transition">
-                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Yesterday, 5:15 PM</td>
-                                <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Lobster Risotto</td>
-                                <td class="px-4 py-3 whitespace-nowrap text-sm">
-                                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-red-800 to-red-600">-1</span>
-                                </td>
-                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">System</td>
-                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Sold</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <!-- Settings Tab Content -->
+            <div id="settings-content" class="hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <!-- Settings Sidebar -->
+                    <div class="lg:col-span-1 bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-4 border border-purple-700 h-fit">
+                        <h2 class="text-lg font-bold text-pink-200 mb-4 px-2">Settings</h2>
+                        <nav class="space-y-1">
+                            <button class="pill-tab pill-tab-active w-full text-left px-4 py-3 rounded-lg font-medium transition-all duration-300">
+                                <i class="fas fa-cog mr-2 text-pink-400"></i> General
+                            </button>
+                            <button class="pill-tab w-full text-left px-4 py-3 rounded-lg font-medium text-purple-200 hover:text-pink-200 transition-all duration-300">
+                                <i class="fas fa-users mr-2"></i> Staff
+                            </button>
+                            <button class="pill-tab w-full text-left px-4 py-3 rounded-lg font-medium text-purple-200 hover:text-pink-200 transition-all duration-300">
+                                <i class="fas fa-tags mr-2"></i> Menu
+                            </button>
+                            <button class="pill-tab w-full text-left px-4 py-3 rounded-lg font-medium text-purple-200 hover:text-pink-200 transition-all duration-300">
+                                <i class="fas fa-print mr-2"></i> Receipt
+                            </button>
+                            <button class="pill-tab w-full text-left px-4 py-3 rounded-lg font-medium text-purple-200 hover:text-pink-200 transition-all duration-300">
+                                <i class="fas fa-percentage mr-2"></i> Taxes
+                            </button>
+                            <button class="pill-tab w-full text-left px-4 py-3 rounded-lg font-medium text-purple-200 hover:text-pink-200 transition-all duration-300">
+                                <i class="fas fa-bell mr-2"></i> Notifications
+                            </button>
+                            <button class="pill-tab w-full text-left px-4 py-3 rounded-lg font-medium text-purple-200 hover:text-pink-200 transition-all duration-300">
+                                <i class="fas fa-database mr-2"></i> Backup
+                            </button>
+                        </nav>
+                    </div>
+                    
+                    <!-- Settings Content -->
+                    <div class="lg:col-span-3 bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
+                        <h2 class="text-xl font-bold text-pink-200 mb-6">General Settings</h2>
+                        
+                        <form class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="floating-label-group">
+                                    <input type="text" id="restaurant-name" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                                    <label class="floating-label">Restaurant Name</label>
+                                </div>
+                                <div class="floating-label-group">
+                                    <input type="text" id="phone-number" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                                    <label class="floating-label">Phone Number</label>
+                                </div>
+                            </div>
+                            
+                            <div class="floating-label-group">
+                                <input type="text" id="address" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                                <label class="floating-label">Address</label>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="floating-label-group">
+                                    <input type="text" id="city" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                                    <label class="floating-label">City</label>
+                                </div>
+                                <div class="floating-label-group">
+                                    <input type="text" id="state" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                                    <label class="floating-label">State</label>
+                                </div>
+                                <div class="floating-label-group">
+                                    <input type="text" id="zip-code" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                                    <label class="floating-label">Zip Code</label>
+                                </div>
+                            </div>
+                            
+                            <div class="floating-label-group">
+                                <textarea id="business-hours" rows="3" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required></textarea>
+                                <label class="floating-label">Business Hours</label>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="floating-label-group">
+                                    <input type="email" id="contact-email" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                                    <label class="floating-label">Contact Email</label>
+                                </div>
+                                <div class="floating-label-group">
+                                    <input type="url" id="website" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                                    <label class="floating-label">Website (Optional)</label>
+                                </div>
+                            </div>
+                            
+                            <div class="pt-4 border-t border-purple-700 flex justify-end">
+                                <button type="button" class="bg-purple-800 hover:bg-purple-700 px-6 py-2 rounded-lg font-medium transition mr-3">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:to-pink-400 px-6 py-2 rounded-lg font-medium transition-all glow">
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -565,7 +1509,7 @@
     <!-- Payment Modal -->
     <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
         <div class="bg-gradient-to-b from-purple-900 to-fuchsia-800 rounded-2xl w-full max-w-md mx-4 border border-purple-700 p-6 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-pink-600 rounded-full filter blur-[80px] opacity-20 -mr-16 -mt-16"></div>
+            <div class="absolute top-0 right-0 w-32 h-32 bg-p pink-600 rounded-full filter blur-[80px] opacity-20 -mr-16 -mt-16"></div>
             <div class="absolute bottom-0 left-0 w-32 h-32 bg-purple-600 rounded-full filter blur-[80px] opacity-20 -ml-16 -mb-16"></div>
             
             <div class="relative">
@@ -604,8 +1548,8 @@
                 <div id="cash-payment" class="hidden">
                     <div class="mb-4">
                         <label class="block text-purple-300 text-sm mb-2">Amount Received</label>
-                        <input type="number" placeholder="0.00" 
-                               class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                        <input type="number" placeholder="0.00"
+                                class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
                     </div>
                     <div class="bg-purple-800 bg-opacity-50 rounded-lg p-3 mb-4 hidden">
                         <p class="text-sm text-purple-300">Change Due: <span class="text-pink-300 font-medium">$5.00</span></p>
@@ -642,39 +1586,35 @@
             <div class="relative">
                 <h2 class="text-2xl font-bold text-pink-200 mb-6">Add New Inventory Item</h2>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div>
-                        <label class="block text-purple-300 text-sm mb-2">Item Name</label>
-                        <input type="text" placeholder="e.g. Truffle Pasta"
-                               class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                <form class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="floating-label-group">
+                        <input type="text" id="item-name" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                        <label class="floating-label">Item Name</label>
                     </div>
-                    <div>
-                        <label class="block text-purple-300 text-sm mb-2">Category</label>
-                        <select class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    <div class="floating-label-group">
+                        <select id="item-category" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                            <option value=""></option>
                             <option>Appetizers</option>
                             <option>Main Dishes</option>
                             <option>Desserts</option>
                             <option>Beverages</option>
                             <option>Specials</option>
                         </select>
+                        <label class="floating-label">Category</label>
                     </div>
-                    <div>
-                        <label class="block text-purple-300 text-sm mb-2">Price ($)</label>
-                        <input type="number" placeholder="0.00"
-                               class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    <div class="floating-label-group">
+                        <input type="number" id="item-price" step="0.01" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                        <label class="floating-label">Price ($)</label>
                     </div>
-                    <div>
-                        <label class="block text-purple-300 text-sm mb-2">Initial Stock</label>
-                        <input type="number" placeholder="0"
-                               class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    <div class="floating-label-group">
+                        <input type="number" id="item-stock" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                        <label class="floating-label">Initial Stock</label>
                     </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-purple-300 text-sm mb-2">Description</label>
-                        <textarea rows="3"
-                                  class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400"
-                                  placeholder="Item description..."></textarea>
+                    <div class="md:col-span-2 floating-label-group">
+                        <textarea id="item-description" rows="3" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required></textarea>
+                        <label class="floating-label">Description</label>
                     </div>
-                </div>
+                </form>
                 
                 <div class="flex space-x-3">
                     <button class="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:to-pink-400 px-6 py-3 rounded-lg font-bold transition-all glow"
@@ -683,6 +1623,72 @@
                     </button>
                     <button class="bg-purple-800 hover:bg-opacity-70 px-6 py-3 rounded-lg font-bold transition"
                             onclick="closeInventoryModal()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Supplier Modal -->
+    <div id="supplier-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+        <div class="bg-gradient-to-b from-purple-900 to-fuchsia-800 rounded-2xl w-full max-w-lg mx-4 border border-purple-700 p-6 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-pink-600 rounded-full filter blur-[80px] opacity-20 -mr-16 -mt-16"></div>
+            <div class="absolute bottom-0 left-0 w-32 h-32 bg-purple-600 rounded-full filter blur-[80px] opacity-20 -ml-16 -mb-16"></div>
+            
+            <div class="relative">
+                <h2 class="text-2xl font-bold text-pink-200 mb-6">Add New Supplier</h2>
+                
+                <form class="space-y-4 mb-6">
+                    <div class="floating-label-group">
+                        <input type="text" id="supplier-name" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                        <label class="floating-label">Supplier Name</label>
+                    </div>
+                    <div class="floating-label-group">
+                        <input type="text" id="contact-person" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                        <label class="floating-label">Contact Person</label>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="floating-label-group">
+                            <input type="email" id="supplier-email" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                            <label class="floating-label">Email</label>
+                        </div>
+                        <div class="floating-label-group">
+                            <input type="tel" id="supplier-phone" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                            <label class="floating-label">Phone</label>
+                        </div>
+                    </div>
+                    <div class="floating-label-group">
+                        <input type="text" id="supplier-address" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                        <label class="floating-label">Address</label>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="floating-label-group">
+                            <input type="text" id="supplier-city" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                            <label class="floating-label">City</label>
+                        </div>
+                        <div class="floating-label-group">
+                            <input type="text" id="supplier-state" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                            <label class="floating-label">State</label>
+                        </div>
+                        <div class="floating-label-group">
+                            <input type="text" id="supplier-zip" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                            <label class="floating-label">Zip Code</label>
+                        </div>
+                    </div>
+                    <div class="floating-label-group">
+                        <textarea id="supplier-notes" rows="3" class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400"></textarea>
+                        <label class="floating-label">Notes (Optional)</label>
+                    </div>
+                </form>
+                
+                <div class="flex space-x-3">
+                    <button class="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:to-pink-400 px-6 py-3 rounded-lg font-bold transition-all glow"
+                            onclick="saveSupplier()">
+                        Save Supplier
+                    </button>
+                    <button class="bg-purple-800 hover:bg-opacity-70 px-6 py-3 rounded-lg font-bold transition"
+                            onclick="closeSupplierModal()">
                         Cancel
                     </button>
                 </div>
@@ -765,6 +1771,11 @@
         // Current Order Data
         let currentOrder = [];
         let paymentMethod = null;
+        let activeTab = 'pos';
+        let activeNestedTab = {
+            pos: 'order',
+            inventory: 'items'
+        };
         
         // Generate floating bubbles
         function createBubbles() {
@@ -806,24 +1817,51 @@
             }
         }
         
-        // Tab switching
-        document.getElementById('pos-tab').addEventListener('click', function() {
-            this.classList.remove('text-purple-200');
-            this.classList.add('tab-active');
-            document.getElementById('inventory-tab').classList.add('text-purple-200');
-            document.getElementById('inventory-tab').classList.remove('tab-active');
-            document.getElementById('pos-content').classList.remove('hidden');
-            document.getElementById('inventory-content').classList.add('hidden');
-        });
+        // Tab switching functions
+        function switchTab(tabName) {
+            if (tabName === activeTab) return;
+            
+            const oldTab = document.getElementById(`${activeTab}-content`);
+            oldTab.classList.add('tab-content-out');
+            
+            const newTab = document.getElementById(`${tabName}-content`);
+            
+            setTimeout(() => {
+                oldTab.classList.add('hidden');
+                oldTab.classList.remove('tab-content-in', 'tab-content-out');
+                
+                newTab.classList.remove('hidden');
+                newTab.classList.add('tab-content-in');
+                
+                // Update active tab styling
+                document.getElementById(`${activeTab}-tab-btn`).classList.remove('tab-active');
+                document.getElementById(`${activeTab}-tab-btn`).classList.add('text-purple-200', 'tab-hover');
+                document.getElementById(`${tabName}-tab-btn`).classList.add('tab-active');
+                document.getElementById(`${tabName}-tab-btn`).classList.remove('text-purple-200', 'tab-hover');
+                
+                activeTab = tabName;
+                
+                // Ensure nested tab is visible
+                switchNestedTab(tabName, activeNestedTab[tabName]);
+            }, 200);
+        }
         
-        document.getElementById('inventory-tab').addEventListener('click', function() {
-            this.classList.remove('text-purple-200');
-            this.classList.add('tab-active');
-            document.getElementById('pos-tab').classList.add('text-purple-200');
-            document.getElementById('pos-tab').classList.remove('tab-active');
-            document.getElementById('inventory-content').classList.remove('hidden');
-            document.getElementById('pos-content').classList.add('hidden');
-        });
+        function switchNestedTab(parentTab, tabName) {
+            if (activeNestedTab[parentTab] === tabName) return;
+            
+            const containerId = `${parentTab}-nested-content`;
+            const oldTab = document.getElementById(`${activeNestedTab[parentTab]}-content`);
+            const newTab = document.getElementById(`${tabName}-content`);
+            
+            oldTab.classList.add('hidden');
+            newTab.classList.remove('hidden');
+            
+            // Update active tab styling
+            document.getElementById(`${activeNestedTab[parentTab]}-tab-btn`).classList.remove('nested-tab-active');
+            document.getElementById(`${tabName}-tab-btn`).classList.add('nested-tab-active');
+            
+            activeNestedTab[parentTab] = tabName;
+        }
         
         // Add item to order
         function addToOrder(id, name, price, element) {
@@ -1121,6 +2159,31 @@
             }
         }
         
+        function openAddSupplierModal() {
+            document.getElementById('supplier-modal').classList.remove('hidden');
+        }
+        
+        function closeSupplierModal() {
+            document.getElementById('supplier-modal').classList.add('hidden');
+        }
+        
+        function saveSupplier() {
+            alert('New supplier saved!');
+            closeSupplierModal();
+        }
+        
+        function openAddCategoryModal() {
+            alert('Add category modal would open');
+        }
+        
+        function openTableDetails() {
+            document.getElementById('table-details').classList.remove('hidden');
+        }
+        
+        function closeTableDetails() {
+            document.getElementById('table-details').classList.add('hidden');
+        }
+        
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             createBubbles();
@@ -1131,6 +2194,40 @@
             const slideInElements = document.querySelectorAll('.slide-in');
             slideInElements.forEach((element, index) => {
                 element.style.animationDelay = `${index * 0.1}s`;
+            });
+            
+            // Set up tab event listeners
+            document.getElementById('pos-tab-btn').addEventListener('click', () => switchTab('pos'));
+            document.getElementById('inventory-tab-btn').addEventListener('click', () => switchTab('inventory'));
+            document.getElementById('reports-tab-btn').addEventListener('click', () => switchTab('reports'));
+            document.getElementById('settings-tab-btn').addEventListener('click', () => switchTab('settings'));
+            
+            // Set up nested tab event listeners for POS
+            document.getElementById('order-tab-btn').addEventListener('click', () => switchNestedTab('pos', 'order'));
+            document.getElementById('tables-tab-btn').addEventListener('click', () => switchNestedTab('pos', 'tables'));
+            document.getElementById('history-tab-btn').addEventListener('click', () => switchNestedTab('pos', 'history'));
+            
+            // Set up nested tab event listeners for Inventory
+            document.getElementById('items-tab-btn').addEventListener('click', () => switchNestedTab('inventory', 'items'));
+            document.getElementById('suppliers-tab-btn').addEventListener('click', () => switchNestedTab('inventory', 'suppliers'));
+            document.getElementById('categories-tab-btn').addEventListener('click', () => switchNestedTab('inventory', 'categories'));
+            document.getElementById('reorder-tab-btn').addEventListener('click', () => switchNestedTab('inventory', 'reorder'));
+            
+            // Initialize floating labels
+            document.querySelectorAll('.floating-label-group input, .floating-label-group textarea, .floating-label-group select').forEach(el => {
+                if (el.value) {
+                    el.nextElementSibling.classList.add('floating-label-active');
+                }
+                
+                el.addEventListener('focus', () => {
+                    el.nextElementSibling.classList.add('floating-label-active');
+                });
+                
+                el.addEventListener('blur', () => {
+                    if (!el.value) {
+                        el.nextElementSibling.classList.remove('floating-label-active');
+                    }
+                });
             });
         });
     </script>
