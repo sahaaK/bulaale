@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulaal | Agency Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0a3723',
+                        secondary: '#1a5d3a',
+                        accent: '#3a0ca3',
+                        dark: '#050f0a',
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'spin-slow': 'spin 20s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #050f0a;
+            color: #e1e1e1;
+        }
+        
+        .glass-morphism {
+            background: rgba(10, 55, 35, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(26, 93, 58, 0.3);
+        }
+        
+        .active-tab {
+            background: rgba(26, 93, 58, 0.5);
+            border-bottom: 3px solid #3a0ca3;
+        }
+        
+        .bubble {
+            border-radius: 50%;
+            filter: blur(20px);
+            opacity: 0.6;
+            position: absolute;
+            z-index: -1;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -5px rgba(10, 55, 35, 0.3);
+        }
+        
+        .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #1a5d3a, #3a0ca3);
+        }
+        
+        .nav-item.active {
+            background: rgba(26, 93, 58, 0.4);
+            border-left: 3px solid #3a0ca3;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(10, 55, 35, 0.2);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(26, 93, 58, 0.5);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(26, 93, 58, 0.8);
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        .delay-100 {
+            animation-delay: 0.1s;
+        }
+        
+        .delay-200 {
+            animation-delay: 0.2s;
+        }
+        
+        .delay-300 {
+            animation-delay: 0.3s;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen">
+    <!-- Floating background elements -->
+    <div class="bubble bg-emerald-800 w-64 h-64 -left-20 top-1/4 animate-float"></div>
+    <div class="bubble bg-purple-900 w-80 h-80 right-0 top-1/3 animate-float delay-100"></div>
+    <div class="bubble bg-emerald-700 w-72 h-72 left-1/3 bottom-1/4 animate-float delay-200"></div>
+    
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="glass-morphism w-64 flex-shrink-0 border-r border-emerald-900/50 flex flex-col">
+            <div class="p-6">
+                <div class="text-2xl font-bold text-white flex items-center">
+                    <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center mr-2">
+                        <i class="fas fa-camera-retro text-white"></i>
+                    </div>
+                    BULAAL
+                </div>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto px-4 py-2">
+                <div class="space-y-1">
+                    <div class="nav-item active p-3 rounded-lg flex items-center text-emerald-300 cursor-pointer">
+                        <i class="fas fa-tachometer-alt mr-3"></i>
+                        <span>Dashboard</span>
+                    </div>
+                    <div id="projectsTabBtn" class="nav-item p-3 rounded-lg flex items-center hover:text-emerald-300 cursor-pointer">
+                        <i class="fas fa-layer-group mr-3"></i>
+                        <span>Projects</span>
+                    </div>
+                    <div id="clientsTabBtn" class="nav-item p-3 rounded-lg flex items-center hover:text-emerald-300 cursor-pointer">
+                        <i class="fas fa-users mr-3"></i>
+                        <span>Clients</span>
+                    </div>
+                    <div class="nav-item p-3 rounded-lg flex items-center hover:text-emerald-300 cursor-pointer">
+                        <i class="fas fa-calendar-alt mr-3"></i>
+                        <span>Calendar</span>
+                    </div>
+                    <div class="nav-item p-3 rounded-lg flex items-center hover:text-emerald-300 cursor-pointer">
+                        <i class="fas fa-file-invoice-dollar mr-3"></i>
+                        <span>Invoices</span>
+                    </div>
+                    <div class="nav-item p-3 rounded-lg flex items-center hover:text-emerald-300 cursor-pointer">
+                        <i class="fas fa-chart-line mr-3"></i>
+                        <span>Analytics</span>
+                    </div>
+                    <div class="nav-item p-3 rounded-lg flex items-center hover:text-emerald-300 cursor-pointer">
+                        <i class="fas fa-cog mr-3"></i>
+                        <span>Settings</span>
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <div class="text-xs uppercase text-emerald-400 tracking-wider mb-2 px-3">Your Team</div>
+                    <div class="space-y-1">
+                        <div class="flex items-center p-3 rounded-lg hover:bg-emerald-900/30 cursor-pointer">
+                            <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white mr-3">
+                                JK
+                            </div>
+                            <span>John K.</span>
+                        </div>
+                        <div class="flex items-center p-3 rounded-lg hover:bg-emerald-900/30 cursor-pointer">
+                            <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white mr-3">
+                                SM
+                            </div>
+                            <span>Sarah M.</span>
+                        </div>
+                        <div class="flex items-center p-3 rounded-lg hover:bg-emerald-900/30 cursor-pointer">
+                            <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white mr-3">
+                                AD
+                            </div>
+                            <span>Alex D.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-4 border-t border-emerald-900/50">
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="w-10 h-10 rounded-full mr-3">
+                    <div>
+                        <div class="font-medium">Layla Muse</div>
+                        <div class="text-xs text-emerald-300">Admin</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <div class="glass-morphism border-b border-emerald-900/50">
+                <div class="flex justify-between items-center p-4">
+                    <div class="flex items-center space-x-4">
+                        <h1 id="dashboardTitle" class="text-2xl font-bold">Dashboard Overview</h1>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-emerald-300"></i>
+                            <input type="text" placeholder="Search..." class="bg-emerald-900/30 border border-emerald-700 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-transparent">
+                        </div>
+                        
+                        <div class="relative">
+                            <i class="fas fa-bell text-xl text-emerald-300 cursor-pointer hover:text-white"></i>
+                            <span class="absolute -top-1 -right-1 w-4 h-4 bg-purple-600 rounded-full flex items-center justify-center text-xs">3</span>
+                        </div>
+                        
+                        <div class="w-10 h-10 rounded-full bg-emerald-600/30 border border-emerald-700 flex items-center justify-center cursor-pointer">
+                            <i class="fas fa-question text-emerald-300"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex border-t border-emerald-900/50">
+                    <div id="projectsTabHeader" class="px-6 py-3 active-tab font-medium cursor-pointer flex items-center">
+                        <i class="fas fa-layer-group mr-2"></i> Projects
+                    </div>
+                    <div id="clientsTabHeader" class="px-6 py-3 font-medium cursor-pointer hover:bg-emerald-900/20 flex items-center">
+                        <i class="fas fa-users mr-2"></i> Clients
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-6">
+                <!-- Projects Tab Content -->
+                <div id="projectsTab" class="space-y-6">
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="bg-emerald-900/30 rounded-xl p-6 card-hover animate-fadeIn delay-100">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-sm text-emerald-300 mb-1">Active Projects</div>
+                                    <div class="text-3xl font-bold">14</div>
+                                </div>
+                                <div class="w-12 h-12 bg-emerald-600/30 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-business-time text-emerald-400"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-xs text-emerald-300 mb-1">+3 from last month</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 70%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-emerald-900/30 rounded-xl p-6 card-hover animate-fadeIn delay-200">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-sm text-emerald-300 mb-1">Completed</div>
+                                    <div class="text-3xl font-bold">28</div>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-600/30 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-check-circle text-purple-400"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-xs text-emerald-300 mb-1">+5 from last month</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 55%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-emerald-900/30 rounded-xl p-6 card-hover animate-fadeIn delay-300">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-sm text-emerald-300 mb-1">Revenue</div>
+                                    <div class="text-3xl font-bold">$34.2K</div>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-600/30 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-dollar-sign text-blue-400"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-xs text-emerald-300 mb-1">12% increase</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 80%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-emerald-900/30 rounded-xl p-6 card-hover animate-fadeIn delay-300">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-sm text-emerald-300 mb-1">Team Members</div>
+                                    <div class="text-3xl font-bold">9</div>
+                                </div>
+                                <div class="w-12 h-12 bg-yellow-600/30 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-users text-yellow-400"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-xs text-emerald-300 mb-1">+2 this quarter</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 40%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Projects -->
+                    <div class="bg-emerald-900/30 rounded-xl p-6 card-hover animate-fadeIn">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold">Recent Projects</h2>
+                            <button class="text-emerald-300 hover:text-white text-sm flex items-center">
+                                View All <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Project Card 1 -->
+                            <div class="bg-dark rounded-xl overflow-hidden border border-emerald-900/50">
+                                <div class="h-40 bg-cover bg-center" style="background-image: url('https://source.unsplash.com/random/600x400/?design,video')"></div>
+                                <div class="p-4">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="font-bold">Natura Cosmetics</h3>
+                                        <span class="text-xs bg-emerald-900/50 text-emerald-300 px-2 py-1 rounded-full">Design</span>
+                                    </div>
+                                    <p class="text-sm text-gray-300 mb-4">Brand identity and packaging design for new product line</p>
+                                    
+                                    <div class="flex justify-between items-center text-xs">
+                                        <div>
+                                            <div class="text-emerald-300 mb-1">Progress</div>
+                                            <div class="progress-bar w-full">
+                                                <div class="progress-fill" style="width: 75%"></div>
+                                            </div>
+                                        </div>
+                                        <span class="text-emerald-300">75%</span>
+                                    </div>
+                                    
+                                    <div class="mt-4 pt-4 border-t border-emerald-900/30 flex justify-between items-center">
+                                        <div class="flex -space-x-2">
+                                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Team" class="w-7 h-7 rounded-full border-2 border-dark">
+                                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Team" class="w-7 h-7 rounded-full border-2 border-dark">
+                                            <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="Team" class="w-7 h-7 rounded-full border-2 border-dark">
+                                        </div>
+                                        <div class="text-xs text-emerald-300">Due in 12 days</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Project Card 2 -->
+                            <div class="bg-dark rounded-xl overflow-hidden border border-emerald-900/50">
+                                <div class="h-40 bg-cover bg-center" style="background-image: url('https://source.unsplash.com/random/600x400/?videography')"></div>
+                                <div class="p-4">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="font-bold">TechElevate 2023</h3>
+                                        <span class="text-xs bg-purple-900/50 text-purple-300 px-2 py-1 rounded-full">Video</span>
+                                    </div>
+                                    <p class="text-sm text-gray-300 mb-4">Corporate event coverage and highlight reel</p>
+                                    
+                                    <div class="flex justify-between items-center text-xs">
+                                        <div>
+                                            <div class="text-emerald-300 mb-1">Progress</div>
+                                            <div class="progress-bar w-full">
+                                                <div class="progress-fill" style="width: 40%"></div>
+                                            </div>
+                                        </div>
+                                        <span class="text-emerald-300">40%</span>
+                                    </div>
+                                    
+                                    <div class="mt-4 pt-4 border-t border-emerald-900/30 flex justify-between items-center">
+                                        <div class="flex -space-x-2">
+                                            <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Team" class="w-7 h-7 rounded-full border-2 border-dark">
+                                            <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Team" class="w-7 h-7 rounded-full border-2 border-dark">
+                                        </div>
+                                        <div class="text-xs text-emerald-300">Due in 25 days</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Project Card 3 -->
+                            <div class="bg-dark rounded-xl overflow-hidden border border-emerald-900/50">
+                                <div class="h-40 bg-cover bg-center" style="background-image: url('https://source.unsplash.com/random/600x400/?motion,graphics')"></div>
+                                <div class="p-4">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="font-bold">Urban Wellness Ads</h3>
+                                        <span class="text-xs bg-blue-900/50 text-blue-300 px-2 py-1 rounded-full">Motion</span>
+                                    </div>
+                                    <p class="text-sm text-gray-300 mb-4">Animated social media ads for wellness campaign</p>
+                                    
+                                    <div class="flex justify-between items-center text-xs">
+                                        <div>
+                                            <div class="text-emerald-300 mb-1">Progress</div>
+                                            <div class="progress-bar w-full">
+                                                <div class="progress-fill" style="width: 90%"></div>
+                                            </div>
+                                        </div>
+                                        <span class="text-emerald-300">90%</span>
+                                    </div>
+                                    
+                                    <div class="mt-4 pt-4 border-t border-emerald-900/30 flex justify-between items-center">
+                                        <div class="flex -space-x-2">
+                                            <img src="https://randomuser.me/api/portraits/women/90.jpg" alt="Team" class="w-7 h-7 rounded-full border-2 border-dark">
+                                            <img src="https://randomuser.me/api/portraits/men/44.jpg" alt="Team" class="w-7 h-7 rounded-full border-2 border-dark">
+                                            <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Team" class="w-7 h-7 rounded-full border-2 border-dark">
+                                        </div>
+                                        <div class="text-xs text-emerald-300">Due in 3 days</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Timeline & Activity -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Project Timeline -->
+                        <div class="bg-emerald-900/30 rounded-xl p-6 card-hover animate-fadeIn">
+                            <h2 class="text-xl font-bold mb-6">Project Timeline</h2>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-emerald-600/20 rounded-full flex items-center justify-center mt-1 mr-4">
+                                        <i class="fas fa-check text-emerald-400"></i>
+                                    </div>
+                                    <div class="flex-1 pb-4 border-b border-emerald-900/50">
+                                        <div class="flex justify-between">
+                                            <h3 class="font-medium">Project Kickoff</h3>
+                                            <span class="text-xs text-emerald-300">Jun 12</span>
+                                        </div>
+                                        <p class="text-sm text-gray-300">Natura Cosmetics branding project initiated</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-emerald-600/20 rounded-full flex items-center justify-center mt-1 mr-4">
+                                        <i class="fas fa-check text-emerald-400"></i>
+                                    </div>
+                                    <div class="flex-1 pb-4 border-b border-emerald-900/50">
+                                        <div class="flex justify-between">
+                                            <h3 class="font-medium">Design Approval</h3>
+                                            <span class="text-xs text-emerald-300">Jun 18</span>
+                                        </div>
+                                        <p class="text-sm text-gray-300">Client approved initial branding concepts</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-emerald-600/20 rounded-full flex items-center justify-center mt-1 mr-4">
+                                        <i class="fas fa-spinner text-yellow-400"></i>
+                                    </div>
+                                    <div class="flex-1 pb-4 border-b border-emerald-900/50">
+                                        <div class="flex justify-between">
+                                            <h3 class="font-medium">Production Phase</h3>
+                                            <span class="text-xs text-emerald-300">Due Jun 28</span>
+                                        </div>
+                                        <p class="text-sm text-gray-300">Currently in design production phase</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-emerald-600/20 rounded-full flex items-center justify-center mt-1 mr-4">
+                                        <i class="far fa-clock text-blue-400"></i>
+                                    </div>
+                                    <div class="flex-1 pb-4">
+                                        <div class="flex justify-between">
+                                            <h3 class="font-medium">Final Delivery</h3>
+                                            <span class="text-xs text-emerald-300">Due Jul 5</span>
+                                        </div>
+                                        <p class="text-sm text-gray-300">Project completion and final delivery</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Team Activity -->
+                        <div class="bg-emerald-900/30 rounded-xl p-6 card-hover animate-fadeIn">
+                            <h2 class="text-xl font-bold mb-6">Team Activity</h2>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="w-10 h-10 rounded-full mr-4">
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <h3 class="font-medium">Layla Muse</h3>
+                                            <span class="text-xs text-emerald-300">2h ago</span>
+                                        </div>
+                                        <p class="text-sm text-gray-300">Uploaded new design iterations for Natura project</p>
+                                        <div class="mt-2 flex space-x-2">
+                                            <div class="w-12 h-8 bg-cover bg-center rounded" style="background-image: url('https://source.unsplash.com/random/100x100/?design,1')"></div>
+                                            <div class="w-12 h-8 bg-cover bg-center rounded" style="background-image: url('https://source.unsplash.com/random/100x100/?design,2')"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="w-10 h-10 rounded-full mr-4">
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <h3 class="font-medium">John Kim</h3>
+                                            <span class="text-xs text-emerald-300">5h ago</span>
+                                        </div>
+                                        <p class="text-sm text-gray-300">Completed first edit for TechElevate conference video</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="User" class="w-10 h-10 rounded-full mr-4">
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <h3 class="font-medium">Sarah Miller</h3>
+                                            <span class="text-xs text-emerald-300">1d ago</span>
+                                        </div>
+                                        <p class="text-sm text-gray-300">Created 3 animation concepts for Urban Wellness ads</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="User" class="w-10 h-10 rounded-full mr-4">
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <h3 class="font-medium">Alex Dunn</h3>
+                                            <span class="text-xs text-emerald-300">2d ago</span>
+                                        </div>
+                                        <p class="text-sm text-gray-300">Sent project proposal to new client "GreenSolutions"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Clients Tab Content -->
+                <div id="clientsTab" class="space-y-6 hidden">
+                    <!-- Client Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-emerald-900/30 rounded-xl p-6 card-hover">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-sm text-emerald-300 mb-1">Total Clients</div>
+                                    <div class="text-3xl font-bold">32</div>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-600/30 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-users text-purple-400"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-xs text-emerald-300 mb-1">+4 from last quarter</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 15%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-emerald-900/30 rounded-xl p-6 card-hover">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-sm text-emerald-300 mb-1">Active Projects</div>
+                                    <div class="text-3xl font-bold">14</div>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-600/30 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-project-diagram text-blue-400"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-xs text-emerald-300 mb-1">With current clients</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 42%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-emerald-900/30 rounded-xl p-6 card-hover">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-sm text-emerald-300 mb-1">Revenue</div>
+                                    <div class="text-3xl font-bold">$124K</div>
+                                </div>
+                                <div class="w-12 h-12 bg-yellow-600/30 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-dollar-sign text-yellow-400"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-xs text-emerald-300 mb-1">From client projects</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Clients Table -->
+                    <div class="bg-emerald-900/30 rounded-xl overflow-hidden card-hover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-bold">Client List</h2>
+                                <button class="text-emerald-300 hover:text-white text-sm flex items-center">
+                                    Export <i class="fas fa-file-export ml-1"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr class="text-left text-sm border-b border-emerald-900/50 text-emerald-300">
+                                            <th class="pb-3">Client</th>
+                                            <th class="pb-3">Projects</th>
+                                            <th class="pb-3">Revenue</th>
+                                            <th class="pb-3">Since</th>
+                                            <th class="pb-3">Status</th>
+                                            <th class="pb-3">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-emerald-900/50">
+                                        <!-- Client 1 -->
+                                        <tr>
+                                            <td class="py-4">
+                                                <div class="flex items-center">
+                                                    <img src="https://source.unsplash.com/random/100x100/?cosmetics" alt="Client" class="w-10 h-10 rounded-full mr-3">
+                                                    <div>
+                                                        <div class="font-medium">Natura Cosmetics</div>
+                                                        <div class="text-sm text-gray-300">hello@natura.com</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>3</td>
+                                            <td>$24,500</td>
+                                            <td>2021</td>
+                                            <td>
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-emerald-900/50 text-emerald-300">
+                                                    Active
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="text-emerald-300 hover:text-white">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        
+                                        <!-- Client 2 -->
+                                        <tr>
+                                            <td class="py-4">
+                                                <div class="flex items-center">
+                                                    <img src="https://source.unsplash.com/random/100x100/?tech,startup" alt="Client" class="w-10 h-10 rounded-full mr-3">
+                                                    <div>
+                                                        <div class="font-medium">TechElevate</div>
+                                                        <div class="text-sm text-gray-300">contact@techelevate.com</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>5</td>
+                                            <td>$42,000</td>
+                                            <td>2020</td>
+                                            <td>
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-emerald-900/50 text-emerald-300">
+                                                    Active
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="text-emerald-300 hover:text-white">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        
+                                        <!-- Client 3 -->
+                                        <tr>
+                                            <td class="py-4">
+                                                <div class="flex items-center">
+                                                    <img src="https://source.unsplash.com/random/100x100/?wellness" alt="Client" class="w-10 h-10 rounded-full mr-3">
+                                                    <div>
+                                                        <div class="font-medium">Urban Wellness</div>
+                                                        <div class="text-sm text-gray-300">info@urbanwellness.com</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>2</td>
+                                            <td>$18,700</td>
+                                            <td>2022</td>
+                                            <td>
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-900/50 text-blue-300">
+                                                    New
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="text-emerald-300 hover:text-white">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        
+                                        <!-- Client 4 -->
+                                        <tr>
+                                            <td class="py-4">
+                                                <div class="flex items-center">
+                                                    <img src="https://source.unsplash.com/random/100x100/?fashion" alt="Client" class="w-10 h-10 rounded-full mr-3">
+                                                    <div>
+                                                        <div class="font-medium">Moda Styling</div>
+                                                        <div class="text-sm text-gray-300">studio@moda.com</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>4</td>
+                                            <td>$31,200</td>
+                                            <td>2019</td>
+                                            <td>
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-700 text-gray-300">
+                                                    Inactive
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="text-emerald-300 hover:text-white">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        
+                                        <!-- Client 5 -->
+                                        <tr>
+                                            <td class="py-4">
+                                                <div class="flex items-center">
+                                                    <img src="https://source.unsplash.com/random/100x100/?food" alt="Client" class="w-10 h-10 rounded-full mr-3">
+                                                    <div>
+                                                        <div class="font-medium">FreshBites</div>
+                                                        <div class="text-sm text-gray-300">marketing@freshbites.com</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>1</td>
+                                            <td>$7,500</td>
+                                            <td>2023</td>
+                                            <td>
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-yellow-900/50 text-yellow-300">
+                                                    Pending
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="text-emerald-300 hover:text-white">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="mt-6 flex justify-between items-center">
+                                <div class="text-sm text-gray-300">
+                                    Showing 1 to 5 of 32 clients
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="w-8 h-8 bg-emerald-600 rounded flex items-center justify-center">
+                                        <i class="fas fa-chevron-left text-xs"></i>
+                                    </button>
+                                    <button class="w-8 h-8 bg-emerald-600 rounded flex items-center justify-center">1</button>
+                                    <button class="w-8 h-8 bg-emerald-900/30 rounded flex items-center justify-center">2</button>
+                                    <button class="w-8 h-8 bg-emerald-900/30 rounded flex items-center justify-center">3</button>
+                                    <button class="w-8 h-8 bg-emerald-900/30 rounded flex items-center justify-center">
+                                        <i class="fas fa-chevron-right text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- New Clients -->
+                    <div class="bg-emerald-900/30 rounded-xl p-6 card-hover">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold">New Clients</h2>
+                            <button class="text-emerald-300 hover:text-white text-sm flex items-center">
+                                View All <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- New Client 1 -->
+                            <div class="bg-dark rounded-xl p-4 border border-emerald-900/30">
+                                <div class="flex items-center mb-4">
+                                    <img src="https://source.unsplash.com/random/100x100/?tech" alt="Client" class="w-12 h-12 rounded-full mr-3">
+                                    <div>
+                                        <div class="font-medium">Quantum Labs</div>
+                                        <div class="text-sm text-emerald-300">Potential: High</div>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-300 mb-4">New tech startup looking for full branding package.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs bg-purple-900/50 text-purple-300 px-2 py-1 rounded-full">Tech</span>
+                                    <div class="text-xs text-emerald-300">Contacted 2d ago</div>
+                                </div>
+                            </div>
+                            
+                            <!-- New Client 2 -->
+                            <div class="bg-dark rounded-xl p-4 border border-emerald-900/30">
+                                <div class="flex items-center mb-4">
+                                    <img src="https://source.unsplash.com/random/100x100/?fitness" alt="Client" class="w-12 h-12 rounded-full mr-3">
+                                    <div>
+                                        <div class="font-medium">PowerGym</div>
+                                        <div class="text-sm text-emerald-300">Potential: Medium</div>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-300 mb-4">Fitness chain needs social media content creation.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs bg-red-900/50 text-red-300 px-2 py-1 rounded-full">Fitness</span>
+                                    <div class="text-xs text-emerald-300">Contacted 1w ago</div>
+                                </div>
+                            </div>
+                            
+                            <!-- New Client 3 -->
+                            <div class="bg-dark rounded-xl p-4 border border-emerald-900/30">
+                                <div class="flex items-center mb-4">
+                                    <img src="https://source.unsplash.com/random/100x100/?restaurant" alt="Client" class="w-12 h-12 rounded-full mr-3">
+                                    <div>
+                                        <div class="font-medium">Taste of Persia</div>
+                                        <div class="text-sm text-emerald-300">Potential: High</div>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-300 mb-4">New restaurant wants food photography & website.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs bg-yellow-900/50 text-yellow-300 px-2 py-1 rounded-full">Food</span>
+                                    <div class="text-xs text-emerald-300">Contacted 3d ago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Tab switching functionality
+        const projectsTabBtn = document.getElementById('projectsTabBtn');
+        const clientsTabBtn = document.getElementById('clientsTabBtn');
+        const projectsTabHeader = document.getElementById('projectsTabHeader');
+        const clientsTabHeader = document.getElementById('clientsTabHeader');
+        const projectsTab = document.getElementById('projectsTab');
+        const clientsTab = document.getElementById('clientsTab');
+        const dashboardTitle = document.getElementById('dashboardTitle');
+        
+        function switchToProjects() {
+            projectsTabBtn.classList.add('nav-item', 'active');
+            clientsTabBtn.classList.remove('nav-item', 'active');
+            projectsTabHeader.classList.add('active-tab');
+            clientsTabHeader.classList.remove('active-tab');
+            projectsTab.classList.remove('hidden');
+            clientsTab.classList.add('hidden');
+            dashboardTitle.textContent = "Dashboard Overview";
+        }
+        
+        function switchToClients() {
+            projectsTabBtn.classList.remove('nav-item', 'active');
+            clientsTabBtn.classList.add('nav-item', 'active');
+            projectsTabHeader.classList.remove('active-tab');
+            clientsTabHeader.classList.add('active-tab');
+            projectsTab.classList.add('hidden');
+            clientsTab.classList.remove('hidden');
+            dashboardTitle.textContent = "Client Management";
+        }
+        
+        projectsTabBtn.addEventListener('click', switchToProjects);
+        clientsTabBtn.addEventListener('click', switchToClients);
+        projectsTabHeader.addEventListener('click', switchToProjects);
+        clientsTabHeader.addEventListener('click', switchToClients);
+        
+        // Animation observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fadeIn');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.card-hover').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

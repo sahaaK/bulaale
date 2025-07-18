@@ -3,957 +3,1136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bulaal Designs | Creative Video & Graphic Agency</title>
+    <title>Nebula POS | Futuristic Restaurant System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#14532d', // Dark green
-                        secondary: '#7e22ce', // Purple
-                        glass: 'rgba(255, 255, 255, 0.05)',
-                        dark: '#0c1621',
-                    },
-                    fontFamily: {
-                        sans: ['Poppins', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0c1621;
-            color: white;
-            overflow-x: hidden;
-        }
-        
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .gradient-text {
-            background: linear-gradient(45deg, #7e22ce, #3b82f6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
         }
         
         .bubble {
             position: absolute;
             border-radius: 50%;
-            filter: blur(30px);
-            opacity: 0.15;
-            animation: float 15s infinite ease-in-out;
+            background: rgba(236, 72, 153, 0.2);
+            filter: blur(5px);
+            animation: float 6s ease-in-out infinite;
+            z-index: -1;
         }
         
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0) translateX(0);
-            }
-            50% {
-                transform: translateY(-50px) translateX(20px);
-            }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
         
-        .hero-image {
-            animation: float 6s infinite ease-in-out;
+        .slide-in {
+            animation: slideIn 0.5s ease-out forwards;
         }
         
-        .card-hover {
-            transition: all 0.3s ease;
+        .glow {
+            box-shadow: 0 0 15px rgba(192, 132, 252, 0.6);
         }
         
-        .card-hover:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        .tab-active {
+            transform: perspective(500px) rotateX(10deg);
+            border-bottom-width: 4px;
+            border-bottom-color: #ec4899;
         }
         
-        .input-glass {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .item-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(192, 132, 252, 0.3);
         }
         
-        .input-glass:focus {
-            outline: none;
-            border-color: #7e22ce;
-            box-shadow: 0 0 0 2px rgba(126, 34, 206, 0.3);
-        }
-        
-        .project-card {
-            perspective: 1000px;
-        }
-        
-        .project-inner {
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-        }
-        
-        .project-card:hover .project-inner {
-            transform: rotateY(180deg);
-        }
-        
-        .project-front, .project-back {
-            backface-visibility: hidden;
-        }
-        
-        .project-back {
-            transform: rotateY(180deg);
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-        }
-        
-        .pulse-animation {
-            animation: pulse 2s infinite;
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
         }
     </style>
 </head>
-<body class="relative min-h-screen">
-    <!-- Floating bubbles background -->
-    <div class="fixed inset-0 overflow-hidden z-0">
-        <div class="bubble bg-primary w-40 h-40 top-20 left-10"></div>
-        <div class="bubble bg-secondary w-60 h-60 bottom-10 right-20 animation-delay-2000"></div>
-        <div class="bubble bg-purple-500 w-32 h-32 top-1/2 left-1/3 animation-delay-3000"></div>
-        <div class="bubble bg-green-400 w-48 h-48 top-1/3 right-1/4 animation-delay-4000"></div>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="glass-effect fixed w-full z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex-shrink-0 flex items-center">
-                    <span class="text-2xl font-bold gradient-text">Bulaal Designs</span>
+<body class="bg-gradient-to-br from-purple-900 to-fuchsia-900 min-h-screen text-white overflow-x-hidden relative">
+    <!-- Floating Bubbles Background -->
+    <div id="bubbles-container" class="fixed inset-0 overflow-hidden pointer-events-none"></div>
+    
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-12 slide-in">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center glow">
+                    <i class="fas fa-utensils text-2xl"></i>
                 </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-8">
-                        <a href="#home" class="text-white hover:text-purple-300 px-3 py-2 text-sm font-medium transition duration-300">Home</a>
-                        <a href="#services" class="text-white hover:text-purple-300 px-3 py-2 text-sm font-medium transition duration-300">Services</a>
-                        <a href="#portfolio" class="text-white hover:text-purple-300 px-3 py-2 text-sm font-medium transition duration-300">Portfolio</a>
-                        <a href="#about" class="text-white hover:text-purple-300 px-3 py-2 text-sm font-medium transition duration-300">About</a>
-                        <a href="#contact" class="text-white hover:text-purple-300 px-3 py-2 text-sm font-medium transition duration-300">Contact</a>
-                    </div>
+                <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-300">
+                    Nebula <span class="opacity-90">POS</span>
+                </h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-right">
+                    <p class="text-pink-200 text-sm">Server: <span class="font-medium">Jessica</span></p>
+                    <p class="text-xs text-purple-300" id="current-time">Loading...</p>
                 </div>
-                <div class="hidden md:block">
-                    <button class="bg-gradient-to-r from-secondary to-primary text-white px-6 py-2 rounded-full font-medium hover:opacity-90 transition duration-300 shadow-lg">
-                        Get Started
-                    </button>
-                </div>
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="text-white focus:outline-none">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-400 flex items-center justify-center">
+                    <i class="fas fa-user text-lg"></i>
                 </div>
             </div>
+        </header>
+        
+        <!-- Main Tabs -->
+        <div class="flex mb-8 border-b border-purple-700">
+            <button id="pos-tab" class="tab-active px-6 py-3 font-semibold text-lg transition-all duration-300 relative group">
+                Point of Sale
+                <span class="absolute bottom-0 left-0 w-0 h-1 bg-pink-500 group-hover:w-full transition-all duration-300"></span>
+            </button>
+            <button id="inventory-tab" class="px-6 py-3 font-semibold text-lg text-purple-200 transition-all duration-300 relative group">
+                Inventory
+                <span class="absolute bottom-0 left-0 w-0 h-1 bg-pink-500 group-hover:w-full transition-all duration-300"></span>
+            </button>
         </div>
         
-        <!-- Mobile menu -->
-        <div id="mobile-menu" class="hidden md:hidden glass-effect">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="#home" class="block px-3 py-2 text-base font-medium text-white hover:text-purple-300">Home</a>
-                <a href="#services" class="block px-3 py-2 text-base font-medium text-white hover:text-purple-300">Services</a>
-                <a href="#portfolio" class="block px-3 py-2 text-base font-medium text-white hover:text-purple-300">Portfolio</a>
-                <a href="#about" class="block px-3 py-2 text-base font-medium text-white hover:text-purple-300">About</a>
-                <a href="#contact" class="block px-3 py-2 text-base font-medium text-white hover:text-purple-300">Contact</a>
-                <button class="block w-full text-left bg-gradient-to-r from-secondary to-primary text-white px-4 py-2 rounded-full font-medium mt-2 hover:opacity-90 transition duration-300">
-                    Get Started
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div class="text-center md:text-left">
-                    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-                        <span class="gradient-text">Creative Designs</span> <br> That Speak Volumes
-                    </h1>
-                    <p class="text-lg text-gray-300 mb-8 max-w-lg mx-auto md:mx-0">
-                        We craft stunning visuals, videos and digital experiences that elevate your brand and captivate your audience.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                        <button class="bg-gradient-to-r from-secondary to-primary text-white px-8 py-3 rounded-full font-medium hover:opacity-90 transition duration-300 shadow-lg pulse-animation">
-                            Get a Free Quote
-                        </button>
-                        <button class="glass-effect border border-gray-700 text-white px-8 py-3 rounded-full font-medium hover:bg-white hover:bg-opacity-10 transition duration-300">
-                            Our Portfolio
-                        </button>
-                    </div>
-                </div>
-                <div class="relative">
-                    <div class="glass-effect p-6 rounded-2xl w-full max-w-md mx-auto">
+        <!-- POS Tab Content -->
+        <div id="pos-content" class="slide-in">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Menu Items -->
+                <div class="lg:col-span-2 bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-pink-200">Menu</h2>
                         <div class="relative">
-                            <div class="absolute -inset-1 bg-gradient-to-r from-secondary to-primary rounded-2xl blur opacity-75"></div>
-                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
-                                 alt="Creative Design" 
-                                 class="relative hero-image w-full h-auto rounded-xl shadow-2xl">
+                            <input type="text" placeholder="Search menu..." 
+                                   class="bg-purple-900 bg-opacity-50 px-4 py-2 rounded-full w-64 border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                            <i class="fas fa-search absolute right-4 top-3 text-purple-300"></i>
                         </div>
+                    </div>
+                    
+                    <!-- Categories -->
+                    <div class="flex space-x-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                        <button class="category-btn px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full text-sm font-medium whitespace-nowrap glow">All Items</button>
+                        <button class="category-btn px-4 py-2 bg-purple-700 hover:bg-pink-600 rounded-full text-sm font-medium whitespace-nowrap transition">Appetizers</button>
+                        <button class="category-btn px-4 py-2 bg-purple-700 hover:bg-pink-600 rounded-full text-sm font-medium whitespace-nowrap transition">Main Dishes</button>
+                        <button class="category-btn px-4 py-2 bg-purple-700 hover:bg-pink-600 rounded-full text-sm font-medium whitespace-nowrap transition">Desserts</button>
+                        <button class="category-btn px-4 py-2 bg-purple-700 hover:bg-pink-600 rounded-full text-sm font-medium whitespace-nowrap transition">Beverages</button>
+                        <button class="category-btn px-4 py-2 bg-purple-700 hover:bg-pink-600 rounded-full text-sm font-medium whitespace-nowrap transition">Specials</button>
+                    </div>
+                    
+                    <!-- Menu Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <!-- Sample Menu Items -->
+                        <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
+                             onclick="addToOrder('001', 'Truffle Pasta', 24.99, this)">
+                            <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
+                                <i class="fas fa-utensils text-white text-4xl opacity-80"></i>
+                            </div>
+                            <h3 class="font-semibold text-pink-200">Truffle Pasta</h3>
+                            <p class="text-xs text-purple-300 mb-2">Creamy pasta with black truffle</p>
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-pink-300">$24.99</span>
+                                <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#001</span>
+                            </div>
+                        </div>
+                        
+                        <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
+                             onclick="addToOrder('002', 'Lobster Risotto', 32.50, this)">
+                            <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
+                                <i class="fas fa-fish text-white text-4xl opacity-80"></i>
+                            </div>
+                            <h3 class="font-semibold text-pink-200">Lobster Risotto</h3>
+                            <p class="text-xs text-purple-300 mb-2">Creamy Arborio rice with lobster</p>
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-pink-300">$32.50</span>
+                                <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#002</span>
+                            </div>
+                        </div>
+                        
+                        <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
+                             onclick="addToOrder('003', 'Chocolate Soufflé', 14.99, this)">
+                            <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
+                                <i class="fas fa-ice-cream text-white text-4xl opacity-80"></i>
+                            </div>
+                            <h3 class="font-semibold text-pink-200">Chocolate Soufflé</h3>
+                            <p class="text-xs text-purple-300 mb-2">Warm chocolate delight with ice cream</p>
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-pink-300">$14.99</span>
+                                <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#003</span>
+                            </div>
+                        </div>
+                        
+                        <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
+                             onclick="addToOrder('004', 'Sparkling Lemonade', 6.50, this)">
+                            <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
+                                <i class="fas fa-glass-cheers text-white text-4xl opacity-80"></i>
+                            </div>
+                            <h3 class="font-semibold text-pink-200">Sparkling Lemonade</h3>
+                            <p class="text-xs text-purple-300 mb-2">Homemade with fresh lemons</p>
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-pink-300">$6.50</span>
+                                <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#004</span>
+                            </div>
+                        </div>
+                        
+                        <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
+                             onclick="addToOrder('005', 'Caprese Salad', 12.75, this)">
+                            <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
+                                <i class="fas fa-leaf text-white text-4xl opacity-80"></i>
+                            </div>
+                            <h3 class="font-semibold text-pink-200">Caprese Salad</h3>
+                            <p class="text-xs text-purple-300 mb-2">Fresh mozzarella, tomatoes & basil</p>
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-pink-300">$12.75</span>
+                                <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#005</span>
+                            </div>
+                        </div>
+                        
+                        <div class="item-card bg-purple-800 bg-opacity-60 hover:bg-opacity-80 rounded-xl p-4 border border-purple-700 transition-all duration-300 cursor-pointer hover:shadow-lg"
+                             onclick="addToOrder('006', 'Filet Mignon', 38.99, this)">
+                            <div class="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg mb-3 flex items-center justify-center">
+                                <i class="fas fa-drumstick-bite text-white text-4xl opacity-80"></i>
+                            </div>
+                            <h3 class="font-semibold text-pink-200">Filet Mignon</h3>
+                            <p class="text-xs text-purple-300 mb-2">8oz premium cut with truffle butter</p>
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-pink-300">$38.99</span>
+                                <span class="text-xs px-2 py-1 bg-pink-500 bg-opacity-20 rounded-full">#006</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order Summary -->
+                <div class="bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-pink-200">Current Order</h2>
+                        <div class="flex space-x-2">
+                            <button class="bg-gradient-to-r from-purple-700 to-purple-600 hover:to-pink-500 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300"
+                                    onclick="clearOrder()">
+                                <i class="fas fa-trash-alt mr-1"></i> Clear
+                            </button>
+                            <select class="bg-purple-900 bg-opacity-50 border border-purple-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-pink-400 text-sm">
+                                <option>Table 1</option>
+                                <option>Table 2</option>
+                                <option>Table 3</option>
+                                <option>Table 4</option>
+                                <option>Table 5</option>
+                                <option>Table 6</option>
+                                <option>Takeout</option>
+                                <option>Delivery</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Items -->
+                    <div id="order-items" class="max-h-96 overflow-y-auto mb-6 pr-2 scrollbar-hide">
+                        <!-- Order items will be added here -->
+                        <div id="empty-order" class="flex flex-col items-center justify-center h-64 text-purple-300">
+                            <i class="fas fa-shopping-basket text-5xl mb-4 opacity-30"></i>
+                            <p>Your order is empty</p>
+                            <p class="text-xs mt-2">Click on menu items to add them</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Summary -->
+                    <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 mb-4 border border-purple-700">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-purple-300">Subtotal:</span>
+                            <span id="subtotal" class="font-medium">$0.00</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="text-purple-300">Tax (7%):</span>
+                            <span id="tax" class="font-medium">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-lg font-bold">
+                            <span class="text-pink-200">Total:</span>
+                            <span id="total" class="text-pink-400">$0.00</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="bg-gradient-to-r from-purple-600 to-pink-500 hover:to-purple-400 px-4 py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center glow hover:glow-lg"
+                                onclick="processPayment()">
+                            <i class="fas fa-credit-card mr-2"></i> Payment
+                        </button>
+                        <button class="bg-gradient-to-r from-purple-800 to-purple-600 hover:to-pink-500 px-4 py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center"
+                                onclick="printReceipt()">
+                            <i class="fas fa-receipt mr-2"></i> Print
+                        </button>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="mt-4 grid grid-cols-4 gap-2">
+                        <button class="bg-purple-700 hover:bg-pink-600 p-2 rounded-lg text-xs transition"
+                                onclick="addDiscount(5)">
+                            <i class="fas fa-tag mr-1"></i> 5% Off
+                        </button>
+                        <button class="bg-purple-700 hover:bg-pink-600 p-2 rounded-lg text-xs transition"
+                                onclick="addDiscount(10)">
+                            <i class="fas fa-tag mr-1"></i> 10% Off
+                        </button>
+                        <button class="bg-purple-700 hover:bg-pink-600 p-2 rounded-lg text-xs transition"
+                                onclick="addSpecialRequest()">
+                            <i class="fas fa-star mr-1"></i> Special
+                        </button>
+                        <button class="bg-purple-700 hover:bg-pink-600 p-2 rounded-lg text-xs transition"
+                                onclick="splitCheck()">
+                            <i class="fas fa-cut mr-1"></i> Split
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Orders -->
+            <div class="mt-8 bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
+                <h2 class="text-xl font-bold text-pink-200 mb-4">Active Tables</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
+                        <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-table text-2xl"></i>
+                        </div>
+                        <h3 class="font-bold text-pink-100">Table 1</h3>
+                        <p class="text-xs text-purple-200">$58.20 • 4 items</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
+                        <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-motorcycle text-2xl"></i>
+                        </div>
+                        <h3 class="font-bold text-pink-100">Delivery #42</h3>
+                        <p class="text-xs text-purple-200">$112.75 • 8 items</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
+                        <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-utensils text-2xl"></i>
+                        </div>
+                        <h3 class="font-bold text-pink-100">Table 4</h3>
+                        <p class="text-xs text-purple-200">$89.45 • 5 items</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
+                        <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-box text-2xl"></i>
+                        </div>
+                        <h3 class="font-bold text-pink-100">Takeout #15</h3>
+                        <p class="text-xs text-purple-200">$24.99 • 2 items</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
+                        <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-table text-2xl"></i>
+                        </div>
+                        <h3 class="font-bold text-pink-100">Table 3</h3>
+                        <p class="text-xs text-purple-200">$0.00 • Empty</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition-transform">
+                        <div class="w-16 h-16 bg-purple-800 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-plus text-2xl"></i>
+                        </div>
+                        <h3 class="font-bold text-pink-100">New Table</h3>
+                        <p class="text-xs text-purple-200">Click to add</p>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-dark to-transparent z-10"></div>
-    </section>
-
-    <!-- Clients Section -->
-    <section class="py-12 bg-gradient-to-r from-dark via-primary/10 to-dark relative">
-        <div class="max-w4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h3 class="text-center text-gray-400 text-sm font-medium mb-8">TRUSTED BY INDUSTRY LEADERS</h3>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 items-center">
-                <div class="flex justify-center">
-                    <img src="images/logo-1.png" alt="Client logo" class="h-8 opacity-70 hover:opacity-100 transition duration-300">
-                </div>
-                <div class="flex justify-center">
-                    <img src="images/logo-2.png" alt="Client logo" class="h-8 opacity-70 hover:opacity-100 transition duration-300">
-                </div>
-                <div class="flex justify-center">
-                    <img src="images/logo-3.png" alt="Client logo" class="h-8 opacity-70 hover:opacity-100 transition duration-300">
-                </div>
-                <div class="flex justify-center">
-                    <img src="images/logo-4.png" alt="Client logo" class="h-8 opacity-70 hover:opacity-100 transition duration-300">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="py-20 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <span class="text-secondary font-medium">OUR SERVICES</span>
-                <h2 class="text-3xl md:text-4xl font-bold mt-2">What We <span class="gradient-text">Excel</span> In</h2>
-                <p class="mt-4 text-gray-400 max-w-2xl mx-auto">
-                    We offer a comprehensive suite of creative services to bring your vision to life.
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Service 1 -->
-                <div class="glass-effect p-8 rounded-xl card-hover relative overflow-hidden group">
-                    <div class="bg-secondary/10 absolute -inset-1 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-300"></div>
-                    <div class="relative z-10">
-                        <div class="w-14 h-14 bg-primary rounded-lg flex items-center justify-center mb-6">
-                            <i class="fas fa-film text-2xl text-white"></i>
+        <!-- Inventory Tab Content -->
+        <div id="inventory-content" class="hidden slide-in">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Inventory List -->
+                <div class="lg:col-span-2 bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-pink-200">Inventory Management</h2>
+                        <div class="flex space-x-2">
+                            <button class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-lg text-sm font-medium glow"
+                                    onclick="openAddItemModal()">
+                                <i class="fas fa-plus mr-1"></i> Add Item
+                            </button>
+                            <button class="bg-purple-700 hover:bg-pink-600 px-4 py-2 rounded-lg text-sm font-medium transition">
+                                <i class="fas fa-filter mr-1"></i> Filter
+                            </button>
                         </div>
-                        <h3 class="text-xl font-bold mb-3">Video Production</h3>
-                        <p class="text-gray-400 mb-6">
-                            Professional video production services from concept to final edit, including commercials, promotional videos, and documentaries.
-                        </p>
-                        <a href="#" class="text-secondary font-medium flex items-center group-hover:translate-x-2 transition duration-300">
-                            Learn more <i class="fas fa-arrow-right ml-2"></i>
-                        </a>
+                    </div>
+                    
+                    <!-- Inventory Table -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-purple-700">
+                            <thead>
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">ID</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Item</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Category</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Stock</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Price</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-purple-800">
+                                <!-- Sample Inventory Items -->
+                                <tr class="hover:bg-purple-800 transition">
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">001</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Truffle Pasta</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Main Dishes</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                        <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-700 to-green-500">In Stock: 42</span>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-pink-300 font-medium">$24.99</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                        <button class="text-purple-300 hover:text-pink-400 mr-2" onclick="editInventoryItem('001')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-purple-300 hover:text-pink-400" onclick="removeInventoryItem('001')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="hover:bg-purple-800 transition">
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">002</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Lobster Risotto</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Main Dishes</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                        <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-yellow-700 to-yellow-500">Low Stock: 8</span>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-pink-300 font-medium">$32.50</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                        <button class="text-purple-300 hover:text-pink-400 mr-2" onclick="editInventoryItem('002')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-purple-300 hover:text-pink-400" onclick="removeInventoryItem('002')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="hover:bg-purple-800 transition">
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">004</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Sparkling Lemonade</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Beverages</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                        <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-700 to-green-500">In Stock: 27</span>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-pink-300 font-medium">$6.50</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                        <button class="text-purple-300 hover:text-pink-400 mr-2" onclick="editInventoryItem('004')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-purple-300 hover:text-pink-400" onclick="removeInventoryItem('004')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="hover:bg-purple-800 transition">
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">006</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Filet Mignon</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Main Dishes</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                        <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-red-700 to-red-500">Out of Stock</span>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-pink-300 font-medium">$38.99</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                        <button class="text-purple-300 hover:text-pink-400 mr-2" onclick="editInventoryItem('006')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-purple-300 hover:text-pink-400" onclick="removeInventoryItem('006')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 
-                <!-- Service 2 -->
-                <div class="glass-effect p-8 rounded-xl card-hover relative overflow-hidden group">
-                    <div class="bg-secondary/10 absolute -inset-1 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-300"></div>
-                    <div class="relative z-10">
-                        <div class="w-14 h-14 bg-purple-800 rounded-lg flex items-center justify-center mb-6">
-                            <i class="fas fa-paint-brush text-2xl text-white"></i>
+                <!-- Inventory Stats & Orders -->
+                <div class="bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
+                    <h2 class="text-xl font-bold text-pink-200 mb-6">Inventory Stats</h2>
+                    
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 border border-purple-700">
+                            <h3 class="text-sm font-medium text-purple-300 mb-1">Total Items</h3>
+                            <p class="text-2xl font-bold text-pink-300">47</p>
                         </div>
-                        <h3 class="text-xl font-bold mb-3">Graphic Design</h3>
-                        <p class="text-gray-400 mb-6">
-                            Stunning visuals for your brand including logos, branding packages, social media graphics, and print materials.
-                        </p>
-                        <a href="#" class="text-secondary font-medium flex items-center group-hover:translate-x-2 transition duration-300">
-                            Learn more <i class="fas fa-arrow-right ml-2"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Service 3 -->
-                <div class="glass-effect p-8 rounded-xl card-hover relative overflow-hidden group">
-                    <div class="bg-secondary/10 absolute -inset-1 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-300"></div>
-                    <div class="relative z-10">
-                        <div class="w-14 h-14 bg-green-600 rounded-lg flex items-center justify-center mb-6">
-                            <i class="fas fa-code text-2xl text-white"></i>
+                        <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 border border-purple-700">
+                            <h3 class="text-sm font-medium text-purple-300 mb-1">Low Stock</h3>
+                            <p class="text-2xl font-bold text-yellow-400">5</p>
                         </div>
-                        <h3 class="text-xl font-bold mb-3">Web Development</h3>
-                        <p class="text-gray-400 mb-6">
-                            Custom, responsive websites that represent your brand perfectly and provide an exceptional user experience.
-                        </p>
-                        <a href="#" class="text-secondary font-medium flex items-center group-hover:translate-x-2 transition duration-300">
-                            Learn more <i class="fas fa-arrow-right ml-2"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Service 4 -->
-                <div class="glass-effect p-8 rounded-xl card-hover relative overflow-hidden group">
-                    <div class="bg-secondary/10 absolute -inset-1 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-300"></div>
-                    <div class="relative z-10">
-                        <div class="w-14 h-14 bg-purple-600 rounded-lg flex items-center justify-center mb-6">
-                            <i class="fas fa-ad text-2xl text-white"></i>
+                        <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 border border-purple-700">
+                            <h3 class="text-sm font-medium text-purple-300 mb-1">Out of Stock</h3>
+                            <p class="text-2xl font-bold text-red-400">3</p>
                         </div>
-                        <h3 class="text-xl font-bold mb-3">Motion Graphics</h3>
-                        <p class="text-gray-400 mb-6">
-                            Captivating animations and motion graphics that enhance your message and engage your audience.
-                        </p>
-                        <a href="#" class="text-secondary font-medium flex items-center group-hover:translate-x-2 transition duration-300">
-                            Learn more <i class="fas fa-arrow-right ml-2"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Service 5 -->
-                <div class="glass-effect p-8 rounded-xl card-hover relative overflow-hidden group">
-                    <div class="bg-secondary/10 absolute -inset-1 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-300"></div>
-                    <div class="relative z-10">
-                        <div class="w-14 h-14 bg-green-700 rounded-lg flex items-center justify-center mb-6">
-                            <i class="fas fa-camera-retro text-2xl text-white"></i>
+                        <div class="bg-purple-900 bg-opacity-30 rounded-lg p-4 border border-purple-700">
+                            <h3 class="text-sm font-medium text-purple-300 mb-1">Categories</h3>
+                            <p class="text-2xl font-bold text-green-400">6</p>
                         </div>
-                        <h3 class="text-xl font-bold mb-3">Photography</h3>
-                        <p class="text-gray-400 mb-6">
-                            High-quality product, portrait, and event photography that tells your story through compelling visuals.
-                        </p>
-                        <a href="#" class="text-secondary font-medium flex items-center group-hover:translate-x-2 transition duration-300">
-                            Learn more <i class="fas fa-arrow-right ml-2"></i>
-                        </a>
                     </div>
-                </div>
-                
-                <!-- Service 6 -->
-                <div class="glass-effect p-8 rounded-xl card-hover relative overflow-hidden group">
-                    <div class="bg-secondary/10 absolute -inset-1 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-300"></div>
-                    <div class="relative z-10">
-                        <div class="w-14 h-14 bg-primary rounded-lg flex items-center justify-center mb-6">
-                            <i class="fas fa-pencil-ruler text-2xl text-white"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3">UI/UX Design</h3>
-                        <p class="text-gray-400 mb-6">
-                            User-centered interface design that creates seamless and intuitive digital experiences for your customers.
-                        </p>
-                        <a href="#" class="text-secondary font-medium flex items-center group-hover:translate-x-2 transition duration-300">
-                            Learn more <i class="fas fa-arrow-right ml-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="py-20 bg-gradient-to-b from-dark via-dark/90 to-dark relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <span class="text-secondary font-medium">OUR WORK</span>
-                <h2 class="text-3xl md:text-4xl font-bold mt-2">Featured <span class="gradient-text">Projects</span></h2>
-                <p class="mt-4 text-gray-400 max-w-2xl mx-auto">
-                    Take a look at some of our favorite projects we've created for our amazing clients.
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Project 1 -->
-                <div class="project-card h-80 rounded-xl overflow-hidden">
-                    <div class="project-inner w-full h-full relative">
-                        <div class="project-front absolute w-full h-full">
-                            <div class="relative w-full h-full">
-                                <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" 
-                                     alt="Project 1" class="w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
-                                    <h3 class="text-xl font-bold">Brand Commercial</h3>
-                                    <p class="text-gray-300">Video Production</p>
+                    
+                    <!-- Stock Alerts -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-pink-200 mb-3">Stock Alerts</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between bg-red-900 bg-opacity-30 rounded-lg p-3 border border-red-700">
+                                <div>
+                                    <p class="text-sm font-medium">Filet Mignon</p>
+                                    <p class="text-xs text-purple-300">Completely out of stock</p>
                                 </div>
+                                <button class="text-xs bg-red-600 hover:bg-red-500 px-3 py-1 rounded-full transition">
+                                    Order Now
+                                </button>
+                            </div>
+                            <div class="flex items-center justify-between bg-yellow-900 bg-opacity-30 rounded-lg p-3 border border-yellow-700">
+                                <div>
+                                    <p class="text-sm font-medium">Lobster Tail</p>
+                                    <p class="text-xs text-purple-300">Low stock: 5 remaining</p>
+                                </div>
+                                <button class="text-xs bg-yellow-600 hover:bg-yellow-500 px-3 py-1 rounded-full transition">
+                                    Reorder
+                                </button>
                             </div>
                         </div>
-                        <div class="project-back absolute w-full h-full bg-gradient-to-r from-secondary/90 to-primary/90 p-6 flex flex-col justify-center items-center">
-                            <h3 class="text-xl font-bold mb-2 text-center">Brand Commercial</h3>
-                            <p class="text-gray-200 text-center mb-4">A 60-second commercial capturing the essence of the brand's identity.</p>
-                            <button class="bg-white text-primary px-4 py-2 rounded-full text-sm font-medium">View Case Study</button>
-                        </div>
                     </div>
-                </div>
-                
-                <!-- Project 2 -->
-                <div class="project-card h-80 rounded-xl overflow-hidden">
-                    <div class="project-inner w-full h-full relative">
-                        <div class="project-front absolute w-full h-full">
-                            <div class="relative w-full h-full">
-                                <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
-                                     alt="Project 2" class="w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
-                                    <h3 class="text-xl font-bold">Mobile App UI</h3>
-                                    <p class="text-gray-300">UI/UX Design</p>
+                    
+                    <!-- Recent Orders -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-pink-200 mb-3">Recent Suppliers</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-3 bg-purple-900 bg-opacity-20 rounded-lg p-3 border border-purple-700 hover:bg-opacity-40 transition">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
+                                    <i class="fas fa-truck text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Fresh Farm Co.</p>
+                                    <p class="text-xs text-purple-300">Last order: 2 days ago</p>
                                 </div>
                             </div>
-                        </div>
-                        <div class="project-back absolute w-full h-full bg-gradient-to-r from-secondary/90 to-primary/90 p-6 flex flex-col justify-center items-center">
-                            <h3 class="text-xl font-bold mb-2 text-center">Mobile App UI</h3>
-                            <p class="text-gray-200 text-center mb-4">User interface design for a fintech mobile application.</p>
-                            <button class="bg-white text-primary px-4 py-2 rounded-full text-sm font-medium">View Case Study</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Project 3 -->
-                <div class="project-card h-80 rounded-xl overflow-hidden">
-                    <div class="project-inner w-full h-full relative">
-                        <div class="project-front absolute w-full h-full">
-                            <div class="relative w-full h-full">
-                                <img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80" 
-                                     alt="Project 3" class="w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
-                                    <h3 class="text-xl font-bold">Corporate Branding</h3>
-                                    <p class="text-gray-300">Graphic Design</p>
+                            <div class="flex items-center space-x-3 bg-purple-900 bg-opacity-20 rounded-lg p-3 border border-purple-700 hover:bg-opacity-40 transition">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
+                                    <i class="fas fa-fish text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Ocean Seafood</p>
+                                    <p class="text-xs text-purple-300">Last order: 1 week ago</p>
                                 </div>
                             </div>
-                        </div>
-                        <div class="project-back absolute w-full h-full bg-gradient-to-r from-secondary/90 to-primary/90 p-6 flex flex-col justify-center items-center">
-                            <h3 class="text-xl font-bold mb-2 text-center">Corporate Branding</h3>
-                            <p class="text-gray-200 text-center mb-4">Complete branding suite for a tech startup's launch.</p>
-                            <button class="bg-white text-primary px-4 py-2 rounded-full text-sm font-medium">View Case Study</button>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="text-center mt-12">
-                <button class="glass-effect border border-gray-700 text-white px-8 py-3 rounded-full font-medium hover:bg-white hover:bg-opacity-10 transition duration-300">
-                    View All Projects
-                </button>
+            <!-- Recent Inventory Changes -->
+            <div class="mt-8 bg-purple-800 bg-opacity-40 backdrop-blur-lg rounded-2xl p-6 border border-purple-700">
+                <h2 class="text-xl font-bold text-pink-200 mb-4">Recent Inventory Changes</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-purple-700">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Date</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Item</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Change</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">By</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-pink-200 uppercase tracking-wider">Note</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-purple-800">
+                            <tr class="hover:bg-purple-800 transition">
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Today, 10:45 AM</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Truffle Pasta</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-800 to-green-600">+12</span>
+                                </td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Jessica</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Restocked</td>
+                            </tr>
+                            <tr class="hover:bg-purple-800 transition">
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Today, 9:30 AM</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Filet Mignon</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-red-800 to-red-600">-2</span>
+                                </td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">System</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Sold</td>
+                            </tr>
+                            <tr class="hover:bg-purple-800 transition">
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Yesterday, 5:15 PM</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-pink-200">Lobster Risotto</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-red-800 to-red-600">-1</span>
+                                </td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">System</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-purple-200">Sold</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </section>
-
-    <!-- Process Section -->
-    <section class="py-20 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <span class="text-secondary font-medium">OUR PROCESS</span>
-                <h2 class="text-3xl md:text-4xl font-bold mt-2">How We <span class="gradient-text">Work</span></h2>
-                <p class="mt-4 text-gray-400 max-w-2xl mx-auto">
-                    Our proven process ensures we deliver outstanding results for every project.
-                </p>
-            </div>
+    </div>
+    
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+        <div class="bg-gradient-to-b from-purple-900 to-fuchsia-800 rounded-2xl w-full max-w-md mx-4 border border-purple-700 p-6 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-pink-600 rounded-full filter blur-[80px] opacity-20 -mr-16 -mt-16"></div>
+            <div class="absolute bottom-0 left-0 w-32 h-32 bg-purple-600 rounded-full filter blur-[80px] opacity-20 -ml-16 -mb-16"></div>
             
             <div class="relative">
-                <div class="hidden lg:block absolute inset-0 flex items-center justify-center">
-                    <div class="h-full w-0.5 bg-gray-800"></div>
-                </div>
+                <h2 class="text-2xl font-bold text-pink-200 mb-6">Complete Payment</h2>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                    <div class="lg:col-span-1">
-                        <!-- Step 1 -->
-                        <div class="relative flex lg:flex-col items-start lg:items-center mb-12 lg:mb-24">
-                            <div class="flex-shrink-0 bg-primary rounded-full w-12 h-12 flex items-center justify-center text-white font-bold mr-4 lg:mr-0 lg:mb-4 relative z-10">
-                                1
-                            </div>
-                            <div class="lg:text-center">
-                                <h3 class="text-xl font-bold mb-2">Discovery</h3>
-                                <p class="text-gray-400">
-                                    We start by understanding your goals, audience, and vision for the project.
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <!-- Step 3 -->
-                        <div class="relative flex lg:flex-col items-start lg:items-center mb-12 lg:mb-24">
-                            <div class="flex-shrink-0 bg-primary rounded-full w-12 h-12 flex items-center justify-center text-white font-bold mr-4 lg:mr-0 lg:mb-4 relative z-10">
-                                3
-                            </div>
-                            <div class="lg:text-center">
-                                <h3 class="text-xl font-bold mb-2">Creation</h3>
-                                <p class="text-gray-400">
-                                    Our team brings the concept to life with creativity and technical expertise.
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <!-- Step 5 -->
-                        <div class="relative flex lg:flex-col items-start lg:items-center">
-                            <div class="flex-shrink-0 bg-primary rounded-full w-12 h-12 flex items-center justify-center text-white font-bold mr-4 lg:mr-0 lg:mb-4 relative z-10">
-                                5
-                            </div>
-                            <div class="lg:text-center">
-                                <h3 class="text-xl font-bold mb-2">Delivery</h3>
-                                <p class="text-gray-400">
-                                    We present the final product and ensure you're completely satisfied.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Center line on mobile -->
-                    <div class="lg:hidden absolute inset-0 flex justify-center -z-10">
-                        <div class="w-0.5 bg-gray-800"></div>
-                    </div>
-                    
-                    <div class="lg:col-span-1 lg:mt-40">
-                        <!-- Step 2 -->
-                        <div class="relative flex lg:flex-col items-start lg:items-center mb-12 lg:mb-24">
-                            <div class="flex-shrink-0 bg-primary rounded-full w-12 h-12 flex items-center justify-center text-white font-bold mr-4 lg:mr-0 lg:mb-4 relative z-10">
-                                2
-                            </div>
-                            <div class="lg:text-center">
-                                <h3 class="text-xl font-bold mb-2">Strategy</h3>
-                                <p class="text-gray-400">
-                                    We develop a customized strategy to achieve your objectives effectively.
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <!-- Step 4 -->
-                        <div class="relative flex lg:flex-col items-start lg:items-center">
-                            <div class="flex-shrink-0 bg-primary rounded-full w-12 h-12 flex items-center justify-center text-white font-bold mr-4 lg:mr-0 lg:mb-4 relative z-10">
-                                4
-                            </div>
-                            <div class="lg:text-center">
-                                <h3 class="text-xl font-bold mb-2">Review</h3>
-                                <p class="text-gray-400">
-                                    We refine the work based on your feedback until it's perfect.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="lg:col-span-1 flex items-center justify-center">
-                        <div class="glass-effect rounded-xl p-8 w-full max-w-md">
-                            <img src="https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1473&q=80" 
-                                 alt="Our Process" class="w-full h-auto rounded-lg">
-                            <h3 class="text-xl font-bold mt-4">Collaborative Approach</h3>
-                            <p class="text-gray-400 mt-2">
-                                We work closely with you through every step to ensure your vision becomes reality.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section class="py-20 bg-gradient-to-r from-dark via-dark/90 to-dark relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <span class="text-secondary font-medium">TESTIMONIALS</span>
-                <h2 class="text-3xl md:text-4xl font-bold mt-2">What Our <span class="gradient-text">Clients</span> Say</h2>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Testimonial 1 -->
-                <div class="glass-effect p-8 rounded-xl">
-                    <div class="flex items-center mb-4">
-                        <div class="text-secondary text-3xl mr-2">"</div>
-                        <div class="flex items-center">
-                            <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
-                                <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="Client" class="w-full h-full object-cover">
-                            </div>
-                            <div>
-                                <h4 class="font-bold">Sarah Johnson</h4>
-                                <p class="text-sm text-gray-400">CEO, TechStart</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-gray-300">
-                        Bulaal Designs transformed our brand completely. Their video production team captured our company culture perfectly in our corporate video.
-                    </p>
-                    <div class="flex mt-4">
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
+                <div class="mb-6 bg-purple-900 bg-opacity-30 rounded-xl p-4 border border-purple-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-purple-300">Amount Due:</span>
+                        <span id="payment-amount" class="font-bold text-xl text-pink-300">$0.00</span>
                     </div>
                 </div>
                 
-                <!-- Testimonial 2 -->
-                <div class="glass-effect p-8 rounded-xl">
-                    <div class="flex items-center mb-4">
-                        <div class="text-secondary text-3xl mr-2">"</div>
-                        <div class="flex items-center">
-                            <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Client" class="w-full h-full object-cover">
-                            </div>
-                            <div>
-                                <h4 class="font-bold">Michael Chen</h4>
-                                <p class="text-sm text-gray-400">Marketing Director</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-gray-300">
-                        Their graphic design work elevated our product packaging to premium status. We saw a 30% increase in shelf appeal after the redesign.
-                    </p>
-                    <div class="flex mt-4">
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                    </div>
-                </div>
-                
-                <!-- Testimonial 3 -->
-                <div class="glass-effect p-8 rounded-xl">
-                    <div class="flex items-center mb-4">
-                        <div class="text-secondary text-3xl mr-2">"</div>
-                        <div class="flex items-center">
-                            <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
-                                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Client" class="w-full h-full object-cover">
-                            </div>
-                            <div>
-                                <h4 class="font-bold">Emma Rodriguez</h4>
-                                <p class="text-sm text-gray-400">Founder, EcomBrand</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-gray-300">
-                        The website they built for us is not just beautiful but also performs incredibly well. Our conversion rates have doubled since launch.
-                    </p>
-                    <div class="flex mt-4">
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star-half-alt text-yellow-400"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Work Submission Form -->
-    <section id="contact" class="py-20 relative">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="glass-effect rounded-2xl overflow-hidden">
-                <div class="grid grid-cols-1 lg:grid-cols-2">
-                    <div class="bg-gradient-to-br from-primary to-secondary p-12 flex flex-col justify-center">
-                        <h2 class="text-3xl font-bold mb-4">Get Started With Your Project</h2>
-                        <p class="text-gray-200 mb-6">
-                            Tell us about your creative needs and we'll get back to you with a proposal.
-                        </p>
-                        <div class="space-y-4">
-                            <div class="flex items-center">
-                                <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center mr-4">
-                                    <i class="fas fa-check text-primary"></i>
-                                </div>
-                                <span>Free consultation</span>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center mr-4">
-                                    <i class="fas fa-check text-primary"></i>
-                                </div>
-                                <span>Custom quotes</span>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center mr-4">
-                                    <i class="fas fa-check text-primary"></i>
-                                </div>
-                                <span>Quick response</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-xl font-bold mb-6">Tell Us About Your Project</h3>
-                        <form id="project-form">
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2" for="name">Your Name</label>
-                                <input type="text" id="name" class="w-full input-glass rounded-lg px-4 py-3 text-white" required>
-                            </div>
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2" for="email">Email</label>
-                                <input type="email" id="email" class="w-full input-glass rounded-lg px-4 py-3 text-white" required>
-                            </div>
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2" for="phone">Phone (Optional)</label>
-                                <input type="tel" id="phone" class="w-full input-glass rounded-lg px-4 py-3 text-white">
-                            </div>
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2">Service Needed</label>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" class="form-checkbox text-secondary rounded border-gray-600 bg-gray-700" name="service" value="video">
-                                        <span class="ml-2">Video</span>
-                                    </label>
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" class="form-checkbox text-secondary rounded border-gray-600 bg-gray-700" name="service" value="graphics">
-                                        <span class="ml-2">Graphics</span>
-                                    </label>
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" class="form-checkbox text-secondary rounded border-gray-600 bg-gray-700" name="service" value="web">
-                                        <span class="ml-2">Web</span>
-                                    </label>
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" class="form-checkbox text-secondary rounded border-gray-600 bg-gray-700" name="service" value="animation">
-                                        <span class="ml-2">Animation</span>
-                                    </label>
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" class="form-checkbox text-secondary rounded border-gray-600 bg-gray-700" name="service" value="branding">
-                                        <span class="ml-2">Branding</span>
-                                    </label>
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" class="form-checkbox text-secondary rounded border-gray-600 bg-gray-700" name="service" value="other">
-                                        <span class="ml-2">Other</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2" for="budget">Budget (USD)</label>
-                                <select id="budget" class="w-full input-glass rounded-lg px-4 py-3 text-white bg-gray-900">
-                                    <option value="">Select Range</option>
-                                    <option value="1k-5k">$1,000 - $5,000</option>
-                                    <option value="5k-10k">$5,000 - $10,000</option>
-                                    <option value="10k-25k">$10,000 - $25,000</option>
-                                    <option value="25k+">$25,000+</option>
-                                </select>
-                            </div>
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium mb-2" for="details">Project Details</label>
-                                <textarea id="details" rows="4" class="w-full input-glass rounded-lg px-4 py-3 text-white" required></textarea>
-                            </div>
-                            <button type="submit" class="w-full bg-gradient-to-r from-secondary to-primary text-white px-6 py-3 rounded-full font-medium hover:opacity-90 transition duration-300">
-                                Submit Project Request
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="py-20 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                <div>
-                    <span class="text-secondary font-medium">ABOUT US</span>
-                    <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-6">Why Choose <span class="gradient-text">Bulaal Designs</span></h2>
-                    <p class="text-gray-400 mb-6">
-                        Founded in 2018, Bulaal Designs has grown from a small creative studio to a full-service digital agency serving clients worldwide. Our team of passionate designers, animators, and developers combines artistic vision with technical expertise.
-                    </p>
-                    <div class="space-y-4 mb-8">
-                        <div class="flex">
-                            <div class="flex-shrink-0 text-secondary mr-4">
-                                <i class="fas fa-check-circle text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold mb-1">Award-Winning Team</h4>
-                                <p class="text-gray-400">Recognized for excellence in design and innovation</p>
-                            </div>
-                        </div>
-                        <div class="flex">
-                            <div class="flex-shrink-0 text-secondary mr-4">
-                                <i class="fas fa-check-circle text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold mb-1">Tailored Solutions</h4>
-                                <p class="text-gray-400">Custom approaches for each client's unique needs</p>
-                            </div>
-                        </div>
-                        <div class="flex">
-                            <div class="flex-shrink-0 text-secondary mr-4">
-                                <i class="fas fa-check-circle text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold mb-1">Cutting-Edge Technology</h4>
-                                <p class="text-gray-400">Using the latest tools and techniques in the industry</p>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="glass-effect border border-gray-700 text-white px-8 py-3 rounded-full font-medium hover:bg-white hover:bg-opacity-10 transition duration-300">
-                        Meet Our Team
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <button class="payment-method bg-gradient-to-br from-purple-700 to-purple-600 rounded-lg p-4 flex flex-col items-center justify-center transition-all hover:scale-105"
+                            onclick="selectPaymentMethod('cash')">
+                        <i class="fas fa-money-bill-wave text-3xl mb-2"></i>
+                        <span class="text-sm font-medium">Cash</span>
+                    </button>
+                    <button class="payment-method bg-gradient-to-br from-purple-700 to-purple-600 rounded-lg p-4 flex flex-col items-center justify-center transition-all hover:scale-105"
+                            onclick="selectPaymentMethod('card')">
+                        <i class="fas fa-credit-card text-3xl mb-2"></i>
+                        <span class="text-sm font-medium">Credit Card</span>
+                    </button>
+                    <button class="payment-method bg-gradient-to-br from-purple-700 to-purple-600 rounded-lg p-4 flex flex-col items-center justify-center transition-all hover:scale-105"
+                            onclick="selectPaymentMethod('mobile')">
+                        <i class="fas fa-mobile-alt text-3xl mb-2"></i>
+                        <span class="text-sm font-medium">Mobile Pay</span>
+                    </button>
+                    <button class="payment-method bg-gradient-to-br from-purple-700 to-purple-600 rounded-lg p-4 flex flex-col items-center justify-center transition-all hover:scale-105"
+                            onclick="selectPaymentMethod('split')">
+                        <i class="fas fa-cut text-3xl mb-2"></i>
+                        <span class="text-sm font-medium">Split Bill</span>
                     </button>
                 </div>
-                <div class="relative">
-                    <div class="glass-effect p-3 rounded-xl w-full">
-                        <div class="relative">
-                            <div class="absolute -inset-1 bg-gradient-to-r from-secondary to-primary rounded-xl blur opacity-50"></div>
-                            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
-                                 alt="Our Team" 
-                                 class="relative w-full h-auto rounded-lg shadow-xl">
-                        </div>
+                
+                <div id="cash-payment" class="hidden">
+                    <div class="mb-4">
+                        <label class="block text-purple-300 text-sm mb-2">Amount Received</label>
+                        <input type="number" placeholder="0.00" 
+                               class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
                     </div>
-                    <div class="absolute -bottom-6 -right-6 glass-effect p-4 rounded-xl w-32 h-32 flex flex-col items-center justify-center text-center">
-                        <span class="text-3xl font-bold text-secondary">5+</span>
-                        <span class="text-sm text-white">Years Experience</span>
+                    <div class="bg-purple-800 bg-opacity-50 rounded-lg p-3 mb-4 hidden">
+                        <p class="text-sm text-purple-300">Change Due: <span class="text-pink-300 font-medium">$5.00</span></p>
                     </div>
+                </div>
+                
+                <div id="card-payment" class="hidden">
+                    <div class="bg-purple-800 bg-opacity-50 rounded-lg p-4 mb-4">
+                        <p class="text-xs text-purple-300 mb-2">Card Terminal Connected</p>
+                        <p class="text-sm font-medium text-pink-200">Amount to charge: <span id="card-amount" class="text-xl">$0.00</span></p>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button id="process-payment-btn" class="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:to-pink-400 px-6 py-3 rounded-lg font-bold transition-all glow"
+                            onclick="completePayment()">
+                        Complete Payment
+                    </button>
+                    <button class="bg-purple-800 hover:bg-opacity-70 px-6 py-3 rounded-lg font-bold transition"
+                            onclick="closePaymentModal()">
+                        Cancel
+                    </button>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section class="py-16 bg-gradient-to-r from-primary/10 to-secondary/10 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <div>
-                    <div class="text-4xl md:text-5xl font-bold text-secondary mb-2" id="projects-count">150+</div>
-                    <div class="text-gray-400">Projects Completed</div>
+    </div>
+    
+    <!-- Add Inventory Item Modal -->
+    <div id="inventory-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+        <div class="bg-gradient-to-b from-purple-900 to-fuchsia-800 rounded-2xl w-full max-w-lg mx-4 border border-purple-700 p-6 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-pink-600 rounded-full filter blur-[80px] opacity-20 -mr-16 -mt-16"></div>
+            <div class="absolute bottom-0 left-0 w-32 h-32 bg-purple-600 rounded-full filter blur-[80px] opacity-20 -ml-16 -mb-16"></div>
+            
+            <div class="relative">
+                <h2 class="text-2xl font-bold text-pink-200 mb-6">Add New Inventory Item</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-purple-300 text-sm mb-2">Item Name</label>
+                        <input type="text" placeholder="e.g. Truffle Pasta"
+                               class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    </div>
+                    <div>
+                        <label class="block text-purple-300 text-sm mb-2">Category</label>
+                        <select class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                            <option>Appetizers</option>
+                            <option>Main Dishes</option>
+                            <option>Desserts</option>
+                            <option>Beverages</option>
+                            <option>Specials</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-purple-300 text-sm mb-2">Price ($)</label>
+                        <input type="number" placeholder="0.00"
+                               class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    </div>
+                    <div>
+                        <label class="block text-purple-300 text-sm mb-2">Initial Stock</label>
+                        <input type="number" placeholder="0"
+                               class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-purple-300 text-sm mb-2">Description</label>
+                        <textarea rows="3"
+                                  class="bg-purple-900 bg-opacity-50 w-full px-4 py-3 rounded-lg border border-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                                  placeholder="Item description..."></textarea>
+                    </div>
                 </div>
-                <div>
-                    <div class="text-4xl md:text-5xl font-bold text-secondary mb-2" id="clients-count">80+</div>
-                    <div class="text-gray-400">Happy Clients</div>
-                </div>
-                <div>
-                    <div class="text-4xl md:text-5xl font-bold text-secondary mb-2" id="team-count">15+</div>
-                    <div class="text-gray-400">Team Members</div>
-                </div>
-                <div>
-                    <div class="text-4xl md:text-5xl font-bold text-secondary mb-2" id="awards-count">9</div>
-                    <div class="text-gray-400">Awards Won</div>
+                
+                <div class="flex space-x-3">
+                    <button class="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:to-pink-400 px-6 py-3 rounded-lg font-bold transition-all glow"
+                            onclick="saveInventoryItem()">
+                        Save Item
+                    </button>
+                    <button class="bg-purple-800 hover:bg-opacity-70 px-6 py-3 rounded-lg font-bold transition"
+                            onclick="closeInventoryModal()">
+                        Cancel
+                    </button>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="py-20 bg-gradient-to-b from-dark via-primary/10 to-dark relative">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Elevate Your <span class="gradient-text">Brand?</span></h2>
-            <p class="text-gray-400 mb-8 mx-auto max-w-2xl">
-                Let's create something extraordinary together. Our team is ready to bring your vision to life with stunning designs and compelling video content.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button class="bg-gradient-to-r from-secondary to-primary text-white px-8 py-3 rounded-full font-medium hover:opacity-90 transition duration-300 shadow-lg">
-                    Get Started Now
+    </div>
+    
+    <!-- Receipt Preview Modal -->
+    <div id="receipt-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl w-full max-w-xs mx-4 p-4 relative overflow-hidden">
+            <div class="text-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800">Nebula Restaurant</h2>
+                <p class="text-xs text-gray-500">123 Cosmos St, New York</p>
+                <p class="text-xs text-gray-500">(555) 123-4567</p>
+            </div>
+            
+            <div class="border-t border-b border-gray-300 py-3 my-3">
+                <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-600">Order #1423</span>
+                    <span class="text-gray-600" id="receipt-date">Jun 12, 2023 7:30 PM</span>
+                </div>
+                <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-600">Server: Jessica</span>
+                    <span class="text-gray-600">Table: 4</span>
+                </div>
+            </div>
+            
+            <div id="receipt-items" class="mb-3">
+                <!-- Items will be added here -->
+                <div class="receipt-item flex justify-between text-sm mb-1">
+                    <div>
+                        <span class="font-medium">1x Truffle Pasta</span>
+                    </div>
+                    <span class="font-medium">$24.99</span>
+                </div>
+                <div class="receipt-item flex justify-between text-sm mb-1">
+                    <div>
+                        <span class="font-medium">1x Lobster Risotto</span>
+                    </div>
+                    <span class="font-medium">$32.50</span>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-300 pt-2 mb-3">
+                <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-600">Subtotal</span>
+                    <span id="receipt-subtotal">$57.49</span>
+                </div>
+                <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-600">Tax (7%)</span>
+                    <span id="receipt-tax">$4.02</span>
+                </div>
+                <div class="flex justify-between font-bold text-base mt-2">
+                    <span>TOTAL</span>
+                    <span id="receipt-total">$61.51</span>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <div class="border-t-4 border-double border-gray-300 pt-4">
+                    <p class="text-xs text-gray-500">Thank you for dining with us!</p>
+                    <p class="text-xs text-gray-500">Please come again</p>
+                </div>
+            </div>
+            
+            <div class="flex space-x-3 mt-6">
+                <button class="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition"
+                        onclick="printReceiptFinal()">
+                    Print Receipt
                 </button>
-                <button class="glass-effect border border-gray-700 text-white px-8 py-3 rounded-full font-medium hover:bg-white hover:bg-opacity-10 transition duration-300 flex items-center justify-center">
-                    <i class="fas fa-phone-alt mr-2"></i> Schedule a Call
+                <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-medium transition"
+                        onclick="closeReceiptModal()">
+                    Close
                 </button>
             </div>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-dark pt-20 pb-12 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
-                <div class="md:col-span-2">
-                    <span class="text-2xl font-bold gradient-text mb-4 block">Bulaal Designs</span>
-                    <p class="text-gray-400 mb-6 max-w-md">
-                        We are a creative agency specializing in video production, graphic design, and digital experiences that help brands tell their unique stories.
-                    </p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-gray-400 hover:text-secondary transition duration-300">
-                            <i class="fab fa-facebook-f text-xl"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-secondary transition duration-300">
-                            <i class="fab fa-twitter text-xl"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-secondary transition duration-300">
-                            <i class="fab fa-instagram text-xl"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-secondary transition duration-300">
-                            <i class="fab fa-linkedin-in text-xl"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-secondary transition duration-300">
-                            <i class="fab fa-dribbble text-xl"></i>
-                        </a>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="text-white font-bold text-lg mb-6">Services</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-secondary transition duration-300">Video Production</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-secondary transition duration-300">Motion Graphics</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-secondary transition duration-300">Graphic Design</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-secondary transition duration-300">Web Development</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-secondary transition duration-300">Branding</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-bold text-lg mb-6">Contact</h4>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fas fa-map-marker-alt text-secondary mt-1 mr-3"></i>
-                            <span class="text-gray-400">Bulaale Studio</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-envelope text-secondary mr-3"></i>
-                            <span class="text-gray-400">hello@bulaal.com</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-phone-alt text-secondary mr-3"></i>
-                            <span class="text-gray-400">+252 61 7689273</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-500 text-sm mb-4 md:mb-0">
-                    &copy; 2025 Bulaal Designs. All rights reserved.
-                </p>
-                <div class="flex space-x-6">
-                    <a href="#" class="text-gray-500 hover:text-gray-300 text-sm">Privacy Policy</a>
-                    <a href="#" class="text-gray-500 hover:text-gray-300 text-sm">Terms of Service</a>
-                    <a href="#" class="text-gray-500 hover:text-gray-300 text-sm">Cookies</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
+    </div>
+    
     <script>
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        });
+        // Current Order Data
+        let currentOrder = [];
+        let paymentMethod = null;
         
-        // Form submission
-        document.getElementById('project-form').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Generate floating bubbles
+        function createBubbles() {
+            const container = document.getElementById('bubbles-container');
+            const bubbleCount = window.innerWidth < 768 ? 8 : 15;
             
-            // Get form values
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const details = document.getElementById('details').value;
-            
-            // Here you would typically send this data to a server
-            alert(`Thank you, ${name}! We've received your project details and will contact you at ${email} shortly.`);
-            
-            // Reset form
-            this.reset();
-        });
-        
-        // Animate counting numbers
-        function animateCounter(element, start, end, duration) {
-            let startTime = null;
-            const step = (timestamp) => {
-                if (!startTime) startTime = timestamp;
-                const progress = Math.min((timestamp - startTime) / duration, 1);
-                element.textContent = Math.floor(progress * (end - start) + start) + (element.id === 'projects-count' ? '+' : 
-                                                                                     element.id === 'clients-count' ? '+' : 
-                                                                                     element.id === 'team-count' ? '+' : '');
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
-            };
-            window.requestAnimationFrame(step);
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // Random size between 60px and 200px
+                const size = Math.random() * 140 + 60;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                // Random position
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation delay
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                
+                container.appendChild(bubble);
+            }
         }
         
-        // Counters animation when stats section comes into view
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounter(document.getElementById('projects-count'), 0, 150, 1000);
-                    animateCounter(document.getElementById('clients-count'), 0, 80, 1000);
-                    animateCounter(document.getElementById('team-count'), 0, 15, 1000);
-                    animateCounter(document.getElementById('awards-count'), 0, 9, 1000);
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.5 });
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            const dateStr = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            document.getElementById('current-time').textContent = `${timeStr} • ${dateStr}`;
+            
+            // Update receipt time as well if modal is open
+            if (!document.getElementById('receipt-modal').classList.contains('hidden')) {
+                const receiptDateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                const receiptTimeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                document.getElementById('receipt-date').textContent = `${receiptDateStr} ${receiptTimeStr}`;
+            }
+        }
         
-        observer.observe(document.querySelector('.bg-gradient-to-r.from-primary\\/10'));
+        // Tab switching
+        document.getElementById('pos-tab').addEventListener('click', function() {
+            this.classList.remove('text-purple-200');
+            this.classList.add('tab-active');
+            document.getElementById('inventory-tab').classList.add('text-purple-200');
+            document.getElementById('inventory-tab').classList.remove('tab-active');
+            document.getElementById('pos-content').classList.remove('hidden');
+            document.getElementById('inventory-content').classList.add('hidden');
+        });
+        
+        document.getElementById('inventory-tab').addEventListener('click', function() {
+            this.classList.remove('text-purple-200');
+            this.classList.add('tab-active');
+            document.getElementById('pos-tab').classList.add('text-purple-200');
+            document.getElementById('pos-tab').classList.remove('tab-active');
+            document.getElementById('inventory-content').classList.remove('hidden');
+            document.getElementById('pos-content').classList.add('hidden');
+        });
+        
+        // Add item to order
+        function addToOrder(id, name, price, element) {
+            // Add animation effect to clicked element
+            element.classList.add('animate-pulse');
+            setTimeout(() => {
+                element.classList.remove('animate-pulse');
+            }, 300);
+            
+            // Check if item already exists in order
+            const existingItem = currentOrder.find(item => item.id === id);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                currentOrder.push({
+                    id: id,
+                    name: name,
+                    price: price,
+                    quantity: 1
+                });
+            }
+            
+            updateOrderDisplay();
+        }
+        
+        // Remove item from order
+        function removeFromOrder(id) {
+            const itemIndex = currentOrder.findIndex(item => item.id === id);
+            
+            if (itemIndex !== -1) {
+                if (currentOrder[itemIndex].quantity > 1) {
+                    currentOrder[itemIndex].quantity -= 1;
+                } else {
+                    currentOrder.splice(itemIndex, 1);
+                }
+                
+                updateOrderDisplay();
+            }
+        }
+        
+        // Update order display
+        function updateOrderDisplay() {
+            const orderItemsContainer = document.getElementById('order-items');
+            const emptyOrderMessage = document.getElementById('empty-order');
+            
+            if (currentOrder.length === 0) {
+                orderItemsContainer.innerHTML = `
+                    <div id="empty-order" class="flex flex-col items-center justify-center h-64 text-purple-300">
+                        <i class="fas fa-shopping-basket text-5xl mb-4 opacity-30"></i>
+                        <p>Your order is empty</p>
+                        <p class="text-xs mt-2">Click on menu items to add them</p>
+                    </div>
+                `;
+            } else {
+                let orderHTML = '';
+                let subtotal = 0;
+                
+                currentOrder.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    
+                    orderHTML += `
+                        <div class="flex justify-between items-center bg-purple-900 bg-opacity-30 hover:bg-opacity-40 rounded-lg p-3 mb-2 transition border border-purple-800">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="font-medium text-pink-200">${item.name}</h3>
+                                        <p class="text-xs text-purple-300">$${item.price.toFixed(2)} each</p>
+                                    </div>
+                                    <span class="font-bold text-pink-300">$${itemTotal.toFixed(2)}</span>
+                                </div>
+                                <div class="flex items-center justify-between mt-2">
+                                    <span class="text-xs px-2 py-1 rounded-full bg-purple-800">#${item.id}</span>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="w-6 h-6 rounded-full bg-purple-800 hover:bg-pink-500 flex items-center justify-center transition"
+                                                onclick="removeFromOrder('${item.id}')">
+                                            <i class="fas fa-minus text-xs"></i>
+                                        </button>
+                                        <span class="text-sm w-6 text-center">${item.quantity}</span>
+                                        <button class="w-6 h-6 rounded-full bg-purple-800 hover:bg-pink-500 flex items-center justify-center transition"
+                                                onclick="addToOrder('${item.id}', '${item.name}', ${item.price}, this)">
+                                            <i class="fas fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                orderItemsContainer.innerHTML = orderHTML;
+                
+                // Calculate totals
+                const tax = subtotal * 0.07; // 7% tax
+                const total = subtotal + tax;
+                
+                // Update totals display
+                document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+                document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
+                document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+                
+                // Update payment modal amount
+                document.getElementById('payment-amount').textContent = `$${total.toFixed(2)}`;
+                document.getElementById('card-amount').textContent = `$${total.toFixed(2)}`;
+                
+                // Update receipt items and totals
+                updateReceiptPreview();
+            }
+        }
+        
+        // Clear current order
+        function clearOrder() {
+            if (currentOrder.length === 0) return;
+            
+            if (confirm('Are you sure you want to clear the current order?')) {
+                currentOrder = [];
+                updateOrderDisplay();
+            }
+        }
+        
+        // Open payment modal
+        function processPayment() {
+            if (currentOrder.length === 0) {
+                alert('Please add items to the order before processing payment.');
+                return;
+            }
+            
+            document.getElementById('payment-modal').classList.remove('hidden');
+        }
+        
+        // Close payment modal
+        function closePaymentModal() {
+            document.getElementById('payment-modal').classList.add('hidden');
+            // Reset payment method selection
+            document.querySelectorAll('.payment-method').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-pink-400', 'scale-105');
+            });
+            paymentMethod = null;
+            
+            // Hide all payment method specifics
+            document.getElementById('cash-payment').classList.add('hidden');
+            document.getElementById('card-payment').classList.add('hidden');
+        }
+        
+        // Select payment method
+        function selectPaymentMethod(method) {
+            paymentMethod = method;
+            
+            // Update UI for selected method
+            document.querySelectorAll('.payment-method').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-pink-400', 'scale-105');
+            });
+            event.currentTarget.classList.add('ring-2', 'ring-pink-400', 'scale-105');
+            
+            // Show appropriate payment method details
+            document.getElementById('cash-payment').classList.add('hidden');
+            document.getElementById('card-payment').classList.add('hidden');
+            
+            if (method === 'cash') {
+                document.getElementById('cash-payment').classList.remove('hidden');
+            } else if (method === 'card') {
+                document.getElementById('card-payment').classList.remove('hidden');
+            }
+        }
+        
+        // Complete payment
+        function completePayment() {
+            if (!paymentMethod) {
+                alert('Please select a payment method.');
+                return;
+            }
+            
+            // Simulate processing
+            document.getElementById('process-payment-btn').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+            
+            setTimeout(() => {
+                // Show success
+                alert(`Payment processed successfully via ${paymentMethod.toUpperCase()}!`);
+                document.getElementById('process-payment-btn').innerHTML = 'Complete Payment';
+                closePaymentModal();
+                
+                // Print receipt (but don't clear order yet)
+                printReceipt();
+            }, 1500);
+        }
+        
+        // Print receipt
+        function printReceipt() {
+            if (currentOrder.length === 0) {
+                alert('No items in the order to print receipt.');
+                return;
+            }
+            
+            document.getElementById('receipt-modal').classList.remove('hidden');
+        }
+        
+        // Close receipt modal
+        function closeReceiptModal() {
+            document.getElementById('receipt-modal').classList.add('hidden');
+        }
+        
+        // Actually print the receipt (final action)
+        function printReceiptFinal() {
+            // Simulate printing
+            alert('Receipt has been printed!');
+            
+            // Clear the order after printing
+            currentOrder = [];
+            updateOrderDisplay();
+            
+            closeReceiptModal();
+        }
+        
+        // Update receipt preview
+        function updateReceiptPreview() {
+            const receiptItemsContainer = document.getElementById('receipt-items');
+            let receiptHTML = '';
+            let subtotal = 0;
+            
+            currentOrder.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                
+                receiptHTML += `
+                    <div class="receipt-item flex justify-between text-sm mb-1">
+                        <div>
+                            <span class="font-medium">${item.quantity}x ${item.name}</span>
+                        </div>
+                        <span class="font-medium">$${itemTotal.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+            
+            receiptItemsContainer.innerHTML = receiptHTML;
+            
+            // Calculate totals
+            const tax = subtotal * 0.07; // 7% tax
+            const total = subtotal + tax;
+            
+            // Update receipt totals
+            document.getElementById('receipt-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('receipt-tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('receipt-total').textContent = `$${total.toFixed(2)}`;
+            
+            // Update date/time
+            updateTime();
+        }
+        
+        // Add discount to order
+        function addDiscount(percent) {
+            alert(`${percent}% discount applied to order!`);
+        }
+        
+        // Add special request
+        function addSpecialRequest() {
+            const request = prompt('Enter special request:');
+            if (request) {
+                alert(`Special request added: "${request}"`);
+            }
+        }
+        
+        // Split check
+        function splitCheck() {
+            if (currentOrder.length === 0) {
+                alert('No items in the order to split.');
+                return;
+            }
+            
+            alert('Check splitting feature would open here');
+        }
+        
+        // Inventory functions
+        function openAddItemModal() {
+            document.getElementById('inventory-modal').classList.remove('hidden');
+        }
+        
+        function closeInventoryModal() {
+            document.getElementById('inventory-modal').classList.add('hidden');
+        }
+        
+        function saveInventoryItem() {
+            alert('New inventory item saved!');
+            closeInventoryModal();
+        }
+        
+        function editInventoryItem(id) {
+            openAddItemModal();
+            alert(`Editing inventory item with ID: ${id}`);
+        }
+        
+        function removeInventoryItem(id) {
+            if (confirm('Are you sure you want to remove this item from inventory?')) {
+                alert(`Inventory item with ID: ${id} removed`);
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createBubbles();
+            updateTime();
+            setInterval(updateTime, 60000); // Update time every minute
+            
+            // Add slide-in animation to all elements with the class
+            const slideInElements = document.querySelectorAll('.slide-in');
+            slideInElements.forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
     </script>
 </body>
 </html>
